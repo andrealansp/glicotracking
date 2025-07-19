@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block content %}
+    <h1>Plano Alimentar</h1>
+    <div class="container-fluid mt-3">
+        <div class="row my-3">
+            <div class="col">
+                <a href="{% url "planos:lista" %}" class="btn btn-warning btn-sm"> Retornar </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h3>{{ object.titulo }}</h3>
+            </div>
+            <hr>
+        </div>
+    <div class="row">
+        <div class="col">
+            {{ object.cardapio | safe }}
+        </div>
+    </div>
+    </div>
+{% endblock %}

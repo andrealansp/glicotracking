@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block content %}
+    <h1>Histórico de Biotipo do Paciente</h1>
+    <div class="container-fluid mt-3">
+        <div class="row my-3">
+            <div class="col">
+               <div class="btn-group" role="group" aria-label="Basic example">
+                    <a class="btn btn-sm btn-warning" href="{% url "core:dashboard" %}" type="button">Retornar</a>
+                    <a href="{% url "perfis:biotipo_registro" %}" class="btn btn-primary btn-sm">Registra Biotipo</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+            <table class="table table-sm table-bordered">
+                <thead>
+                <tr>
+                    <th >Cintura</th>
+                    <th>Quadril</th>
+                    <th>Data da Medição</th>
+                    <th>Próxima Medição</th>
+                    <th>Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for o in biotipo %}
+                    <tr>
+                        <td>{{ o.cintura }}</td>
+                        <td>{{ o.quadril }}</td>
+                        <td>{{ o.data_registro }}</td>
+                        <td>{{ o.proximo_registro }}</td>
+                        <td><a href="{% url "perfis:biotipo_atualiza" pk=o.id %}" class="btn btn-sm btn-primary "><i
+                                    class="bi bi-pencil-fill"></i></a> |
+                                <a href="{% url "perfis:biotipo_delete" pk=o.id %}" class="btn btn-sm btn-danger "><i
+                                        class="bi bi-trash-fill"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot></tfoot>
+            </table>
+        </div>
+        </div>
+    </div>
+{% endblock %}

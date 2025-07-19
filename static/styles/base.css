@@ -1,0 +1,57 @@
+body {
+	background-color: #fdfaf7 !important;
+	font-size: 1rem;
+}
+
+.parent {
+    display: grid;
+    grid-template-columns: .5fr repeat(3, 1fr);
+    grid-template-rows: .5fr repeat(3, 1fr);
+    column-gap: 8px;
+    min-height: 100vh;
+	height: auto;
+}
+
+.div1{
+	background-color: #f1eeea;
+}
+
+.div2 {
+	grid-row: span 4 / span 4;
+	grid-column-start: 1;
+	grid-row-start: 2;
+	background-color: #f1eeea;
+}
+
+.div3 {
+	grid-column: span 4 / span 4;
+	grid-row: span 4 / span 4;
+	grid-column-start: 2;
+	grid-row-start: 1;
+	font-size: small;
+	text-align: left;
+	overflow-y: auto;
+}
+
+.div4 {
+	grid-column: span 4 / span 4;
+	grid-column-start: 2;
+	grid-row-start: 5;
+	font-size: small;
+	text-align: center;
+}
+
+.div3 h1{
+color:#4DA6AC;
+}
+
+/*customizando menu*/
+
+.custon{
+	color: #2c7a7b;
+	font-weight: bold;
+}
+
+.card-body p{
+	font-weight: bold;
+}

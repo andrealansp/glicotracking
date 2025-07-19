@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block content %}
+    <h1 xmlns="http://www.w3.org/1999/html">Meu perfil</h1>
+    <div class="container-fluid mt-3">
+        <div class="row my-3 align-itens-start">
+            <div class="col-2">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <a class="btn btn-sm btn-warning" href="{% url "core:dashboard" %}" type="button">Retornar</a>
+                    <a href="{% url "perfis:atualiza" user_id=perfil.user_id %}" class="btn btn-primary btn-sm">Editar
+                        Perfil</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row ">
+                            <h4 class="mb-3">Dados Pessoais</h4>
+                            <div class="col-4">
+                                <p>Nome: <br> {{ perfil.nome_completo }}</p>
+                            </div>
+                            <div class="col-4">
+                                <p>Telefone: <br> {{ perfil.telefone }}</p>
+                            </div>
+                            <div class="col-4">
+                                <p>Data de Nascimento: <br> {{ perfil.data_nascimento }}</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <h4 class="mb-3">Biotipo</h4>
+                            <div class="col-4">
+                                <p>Sexo: <br> {{ perfil.get_sexo_display }}</p>
+                            </div>
+                            <div class="col-4">
+                                <p>Altura: <br> {{ perfil.altura }} cm</p>
+                            </div>
+                            <div class="col-4">
+                                <p>Tipo Sanguineo: <br> {{ perfil.tipo_sanguineo }} </p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <h4 class="mb-3">Informações Sobre a Doença</h4>
+                            <div class="col-4">
+                                <p>Tipo de diabetes: <br> {{ perfil.get_tipo_diabetes_display }}</p>
+                            </div>
+                            <div class="col-4">
+                                <p>Tempo de Dignóstico: <br> {{ perfil.tempo_diagnostico }}</p>
+                            </div>
+                            <div class="col-4">
+                                <p>Usa Insulina: <br> {{ perfil.get_insulina_display }}</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <h4 class="mb-3">Outras Informações</h4>
+                            <div class="col-4">
+                                <p>Medicamentos Utilizados: <br> {{ perfil.medicamentos_utilizados }}</p>
+                            </div>
+                            <div class="col-4">
+                                <p>Alergias: <br> {{ perfil.alergias }} </p>
+                            </div>
+                            <div class="col-4">
+                                <p>Outras Condições: <br> {{ perfil.outras_condicoes }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

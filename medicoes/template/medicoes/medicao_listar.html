@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block content %}
+    <h1>Acompanhamento de Glicose no Sangue do Paciente</h1>
+    <div class="container-fluid mt-3">
+        <div class="row my-3">
+            <div class="col">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <a class="btn btn-sm btn-warning" href="{% url "core:dashboard" %}" type="button">Retornar</a>
+                    <a href="{% url "medicoes:registra" %}" class="btn btn-primary btn-sm">Registrar Medição</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <form method="get">
+                    <div class="row">
+                        {% csrf_token %}
+                        <div class="col-3">
+                            {% bootstrap_field form.tipo_medicao show_label='skip' size="sm" %}
+                        </div>
+                        <div class="col-3">
+                            {% bootstrap_field form.data_medicao show_label='skip' size="sm" %}
+                        </div>
+                        <div class="col-3">
+                            {% bootstrap_button "Enviar" size="sm" %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <table class="table table-sm table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Valor Da Medição</th>
+                        <th>Tipo de Medição</th>
+                        <th>Data da Medição</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for o in object_list %}
+                        <tr>
+                            <td>{{ o.valor_glicose }}</td>
+                            <td>{{ o.get_tipo_medicao_display }}</td>
+                            <td>{{ o.data_medicao }}</td>
+                            <td><a href="{% url "medicoes:atualiza" pk=o.id %}" class="btn btn-sm btn-primary "><i
+                                    class="bi bi-pencil-fill"></i></a> |
+                                <a href="{% url "medicoes:deleta" pk=o.id %}" class="btn btn-sm btn-danger "><i
+                                        class="bi bi-trash-fill"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

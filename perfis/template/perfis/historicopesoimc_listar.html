@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block content %}
+    <h1>Acompanhamento de Peso Corporal do paciente</h1>
+    <div class="container-fluid mt-3">
+        <div class="row my-3">
+            <div class="col">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <a class="btn btn-sm btn-warning" href="{% url "core:dashboard" %}" type="button">Retornar</a>
+                    <a href="{% url "perfis:peso_registro" %}" class="btn btn-primary btn-sm">Registrar Peso</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <table class="table table-sm table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Peso</th>
+                        <th>IMC</th>
+                        <th>Data da Medição</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for o in object_list %}
+                        <tr>
+                            <td>{{ o.peso_kg }}</td>
+                            <td>{{ o.imc }}</td>
+                            <td>{{ o.data_registro }}</td>
+                            <td><a href="{% url "perfis:peso_atualiza" pk=o.id %}"
+                                   class="btn btn-sm btn-primary "><i
+                                    class="bi bi-pencil-fill"></i></a> |
+                                <a href="{% url "perfis:peso_delete" pk=o.id %}" class="btn btn-sm btn-danger "><i
+                                        class="bi bi-trash-fill"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

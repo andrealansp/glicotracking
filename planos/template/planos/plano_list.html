@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block content %}
+    <h1>Plano Alimentar</h1>
+    <div class="container-fluid mt-3">
+        <div class="row my-3">
+            <div class="col">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <a class="btn btn-sm btn-warning" href="{% url "core:dashboard" %}" type="button">Retornar</a>
+                    <a href="{% url "planos:registra" %}" class="btn btn-primary btn-sm">Registrar Receita</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Receita</th>
+                        <th>Tipo de Refeição</th>
+                        <th>Tags</th>
+                        <th>Operações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for o in object_list %}
+                        <tr>
+                            <td>{{ o.titulo }}</td>
+                            <td>{{ o.get_tipo_refeicao_display }}</td>
+                            <td>
+                                {% for t in o.tag.all  %}
+                            	{{ t }},
+                                {% endfor %}
+                            </td>
+                            <td>
+                                <a href="{% url "planos:visualiza" pk=o.id %}" class="btn btn-sm btn-warning ">
+                                    <i class="bi bi-search"></i></a> |
+                                <a href="{% url "planos:atualiza" pk=o.id %}" class="btn btn-sm btn-primary "><i
+                                        class="bi bi-pencil-fill"></i></a> |
+                                <a href="{% url "planos:deleta" pk=o.id %}" class="btn btn-sm btn-danger "><i
+                                        class="bi bi-trash-fill"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

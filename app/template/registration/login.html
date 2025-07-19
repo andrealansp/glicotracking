@@ -1,0 +1,39 @@
+{% load static %} {% load django_bootstrap5 %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Login Sugar Check</title>
+		<link rel="stylesheet" href={% static "css/base.css" %}> {% bootstrap_css %}
+	</head>
+	<body>
+		<div class="container-fluid">
+			<form method="post" class="form">
+				<div class="row justify-content-center">
+					<div class="col-sm-12 col-lg-5 text-center">
+						<img src={% static '/images/logo.png' %} class="img-fluid"
+						width="300px" alt="Logo sugar check" srcset="" />
+					</div>
+				</div>
+
+				<div class="row justify-content-center">
+					<div class="col-sm-12 col-lg-5">
+						{% csrf_token %} {% bootstrap_form form alert_error_type='all' %}
+					</div>
+				</div>
+				<div class="row justify-content-center">
+					<div class="col-sm-12 col-lg-5">
+						<button type="submit" class="btn btn-warning">
+							Acessar
+						</button>
+                        <a href="/perfis/registra" class="btn btn-warning">
+							Criar Usuário
+						</a>
+					</div>
+				</div>
+			</form>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,126 @@
+[
+  {
+    "model": "core.categoriatag",
+    "pk": 1,
+    "fields": {
+      "nome": "Tipo de Refeição",
+      "slug": "tipo-de-refeicao"
+    }
+  },
+  {
+    "model": "core.categoriatag",
+    "pk": 2,
+    "fields": {
+      "nome": "Tipo de Receita",
+      "slug": "tipo-de-receita"
+    }
+  },
+  {
+    "model": "core.categoriatag",
+    "pk": 3,
+    "fields": {
+      "nome": "Nutrição / Índice Glicêmico",
+      "slug": "nutricao-indice-glicemico"
+    }
+  },
+  {
+    "model": "core.categoriatag",
+    "pk": 4,
+    "fields": {
+      "nome": "Ingrediente Base",
+      "slug": "ingrediente-base"
+    }
+  },
+  {
+    "model": "core.categoriatag",
+    "pk": 5,
+    "fields": {
+      "nome": "Tempo de Preparo",
+      "slug": "tempo-de-preparo"
+    }
+  },
+  {
+    "model": "core.categoriatag",
+    "pk": 6,
+    "fields": {
+      "nome": "Extras",
+      "slug": "extras"
+    }
+  },
+
+  // Tags da categoria 1
+  {"model": "core.tag", "pk": 1, "fields": {"nome": "Café da manhã", "slug": "cafe-da-manha", "categoria": 1}},
+  {"model": "core.tag", "pk": 2, "fields": {"nome": "Almoço", "slug": "almoco", "categoria": 1}},
+  {"model": "core.tag", "pk": 3, "fields": {"nome": "Jantar", "slug": "jantar", "categoria": 1}},
+  {"model": "core.tag", "pk": 4, "fields": {"nome": "Lanche da manhã", "slug": "lanche-da-manha", "categoria": 1}},
+  {"model": "core.tag", "pk": 5, "fields": {"nome": "Lanche da tarde", "slug": "lanche-da-tarde", "categoria": 1}},
+  {"model": "core.tag", "pk": 6, "fields": {"nome": "Ceia", "slug": "ceia", "categoria": 1}},
+  {"model": "core.tag", "pk": 7, "fields": {"nome": "Pré-treino", "slug": "pre-treino", "categoria": 1}},
+  {"model": "core.tag", "pk": 8, "fields": {"nome": "Pós-treino", "slug": "pos-treino", "categoria": 1}},
+
+  // Tags da categoria 2
+  {"model": "core.tag", "pk": 9, "fields": {"nome": "Salada", "slug": "salada", "categoria": 2}},
+  {"model": "core.tag", "pk": 10, "fields": {"nome": "Sopa", "slug": "sopa", "categoria": 2}},
+  {"model": "core.tag", "pk": 11, "fields": {"nome": "Grelhado", "slug": "grelhado", "categoria": 2}},
+  {"model": "core.tag", "pk": 12, "fields": {"nome": "Assado", "slug": "assado", "categoria": 2}},
+  {"model": "core.tag", "pk": 13, "fields": {"nome": "Cozido", "slug": "cozido", "categoria": 2}},
+  {"model": "core.tag", "pk": 14, "fields": {"nome": "Cru", "slug": "cru", "categoria": 2}},
+  {"model": "core.tag", "pk": 15, "fields": {"nome": "Refogado", "slug": "refogado", "categoria": 2}},
+  {"model": "core.tag", "pk": 16, "fields": {"nome": "Omelete", "slug": "omelete", "categoria": 2}},
+  {"model": "core.tag", "pk": 17, "fields": {"nome": "Panqueca", "slug": "panqueca", "categoria": 2}},
+  {"model": "core.tag", "pk": 18, "fields": {"nome": "Bowl", "slug": "bowl", "categoria": 2}},
+  {"model": "core.tag", "pk": 19, "fields": {"nome": "Shake", "slug": "shake", "categoria": 2}},
+  {"model": "core.tag", "pk": 20, "fields": {"nome": "Smoothie", "slug": "smoothie", "categoria": 2}},
+  {"model": "core.tag", "pk": 21, "fields": {"nome": "Sanduíche", "slug": "sanduiche", "categoria": 2}},
+  {"model": "core.tag", "pk": 22, "fields": {"nome": "Wrap", "slug": "wrap", "categoria": 2}},
+  {"model": "core.tag", "pk": 23, "fields": {"nome": "Mingau", "slug": "mingau", "categoria": 2}},
+  {"model": "core.tag", "pk": 24, "fields": {"nome": "Torta", "slug": "torta", "categoria": 2}},
+
+  // Tags da categoria 3
+  {"model": "core.tag", "pk": 25, "fields": {"nome": "Baixo índice glicêmico", "slug": "baixo-indice-glicemico", "categoria": 3}},
+  {"model": "core.tag", "pk": 26, "fields": {"nome": "Médio índice glicêmico", "slug": "medio-indice-glicemico", "categoria": 3}},
+  {"model": "core.tag", "pk": 27, "fields": {"nome": "Alto índice glicêmico", "slug": "alto-indice-glicemico", "categoria": 3}},
+  {"model": "core.tag", "pk": 28, "fields": {"nome": "Sem açúcar", "slug": "sem-acucar", "categoria": 3}},
+  {"model": "core.tag", "pk": 29, "fields": {"nome": "Sem glúten", "slug": "sem-gluten", "categoria": 3}},
+  {"model": "core.tag", "pk": 30, "fields": {"nome": "Sem lactose", "slug": "sem-lactose", "categoria": 3}},
+  {"model": "core.tag", "pk": 31, "fields": {"nome": "Rico em fibras", "slug": "rico-em-fibras", "categoria": 3}},
+  {"model": "core.tag", "pk": 32, "fields": {"nome": "Rico em proteínas", "slug": "rico-em-proteinas", "categoria": 3}},
+  {"model": "core.tag", "pk": 33, "fields": {"nome": "Rico em gorduras boas", "slug": "rico-em-gorduras-boas", "categoria": 3}},
+  {"model": "core.tag", "pk": 34, "fields": {"nome": "Low carb", "slug": "low-carb", "categoria": 3}},
+  {"model": "core.tag", "pk": 35, "fields": {"nome": "Keto", "slug": "keto", "categoria": 3}},
+  {"model": "core.tag", "pk": 36, "fields": {"nome": "Vegetariano", "slug": "vegetariano", "categoria": 3}},
+  {"model": "core.tag", "pk": 37, "fields": {"nome": "Vegano", "slug": "vegano", "categoria": 3}},
+  {"model": "core.tag", "pk": 38, "fields": {"nome": "Diet", "slug": "diet", "categoria": 3}},
+  {"model": "core.tag", "pk": 39, "fields": {"nome": "Light", "slug": "light", "categoria": 3}},
+
+  // Tags da categoria 4
+  {"model": "core.tag", "pk": 40, "fields": {"nome": "Aveia", "slug": "aveia", "categoria": 4}},
+  {"model": "core.tag", "pk": 41, "fields": {"nome": "Banana", "slug": "banana", "categoria": 4}},
+  {"model": "core.tag", "pk": 42, "fields": {"nome": "Batata-doce", "slug": "batata-doce", "categoria": 4}},
+  {"model": "core.tag", "pk": 43, "fields": {"nome": "Arroz integral", "slug": "arroz-integral", "categoria": 4}},
+  {"model": "core.tag", "pk": 44, "fields": {"nome": "Arroz branco", "slug": "arroz-branco", "categoria": 4}},
+  {"model": "core.tag", "pk": 45, "fields": {"nome": "Frango", "slug": "frango", "categoria": 4}},
+  {"model": "core.tag", "pk": 46, "fields": {"nome": "Peixe", "slug": "peixe", "categoria": 4}},
+  {"model": "core.tag", "pk": 47, "fields": {"nome": "Carne vermelha", "slug": "carne-vermelha", "categoria": 4}},
+  {"model": "core.tag", "pk": 48, "fields": {"nome": "Ovos", "slug": "ovos", "categoria": 4}},
+  {"model": "core.tag", "pk": 49, "fields": {"nome": "Iogurte", "slug": "iogurte", "categoria": 4}},
+  {"model": "core.tag", "pk": 50, "fields": {"nome": "Abacate", "slug": "abacate", "categoria": 4}},
+  {"model": "core.tag", "pk": 51, "fields": {"nome": "Feijão", "slug": "feijao", "categoria": 4}},
+  {"model": "core.tag", "pk": 52, "fields": {"nome": "Grão-de-bico", "slug": "grao-de-bico", "categoria": 4}},
+  {"model": "core.tag", "pk": 53, "fields": {"nome": "Lentilha", "slug": "lentilha", "categoria": 4}},
+  {"model": "core.tag", "pk": 54, "fields": {"nome": "Quinoa", "slug": "quinoa", "categoria": 4}},
+  {"model": "core.tag", "pk": 55, "fields": {"nome": "Tofu", "slug": "tofu", "categoria": 4}},
+
+  // Tags da categoria 5
+  {"model": "core.tag", "pk": 56, "fields": {"nome": "Rápido (até 15 min)", "slug": "rapido-ate-15-min", "categoria": 5}},
+  {"model": "core.tag", "pk": 57, "fields": {"nome": "Médio (15-30 min)", "slug": "medio-15-30-min", "categoria": 5}},
+  {"model": "core.tag", "pk": 58, "fields": {"nome": "Demorado (mais de 30 min)", "slug": "demorado-mais-30-min", "categoria": 5}},
+
+  // Tags da categoria 6
+  {"model": "core.tag", "pk": 59, "fields": {"nome": "Receita favorita", "slug": "receita-favorita", "categoria": 6}},
+  {"model": "core.tag", "pk": 60, "fields": {"nome": "Receita testada", "slug": "receita-testada", "categoria": 6}},
+  {"model": "core.tag", "pk": 61, "fields": {"nome": "Receita do dia", "slug": "receita-do-dia", "categoria": 6}},
+  {"model": "core.tag", "pk": 62, "fields": {"nome": "Receita recomendada", "slug": "receita-recomendada", "categoria": 6}},
+  {"model": "core.tag", "pk": 63, "fields": {"nome": "Receita para diabéticos", "slug": "receita-para-diabeticos", "categoria": 6}},
+  {"model": "core.tag", "pk": 64, "fields": {"nome": "Receita de família", "slug": "receita-de-familia", "categoria": 6}}
+]

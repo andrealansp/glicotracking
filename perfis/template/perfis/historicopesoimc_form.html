@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 ">
+                <h1>Registrar Peso</h1>
+                <input class="btn btn-warning my-3" type="reset" value="Retornar"
+                       onClick="history.back()"/>
+            </div>
+        </div>
+        <div class="col-12">
+
+            <form method="post" class="form mt-3">
+                {% csrf_token %}
+
+                {% bootstrap_form form %}
+
+                {% bootstrap_button button_type="submit" content="OK" %}
+                {% bootstrap_button button_type="reset" content="Cancel" %}
+            </form>
+        </div>
+    </div>
+{% endblock %}
