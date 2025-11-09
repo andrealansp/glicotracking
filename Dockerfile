@@ -4,6 +4,12 @@ FROM python:3.15.0a1-slim
 # Define o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    libpq-dev \
+    gcc \
+    && rm -rf /var/lib/apt/lists/
+
 # Copia o arquivo de requisitos e instala as dependências
 # Usa --no-cache-dir para evitar o armazenamento de cache pip e reduzir o tamanho da imagem
 COPY requirements.txt .
