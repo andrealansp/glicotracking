@@ -18,6 +18,7 @@ urlpatterns = [
     path("planos/", include("planos.urls")),
     path("exames/", include("exames.urls")),
     path("perfis/", include("perfis.urls")),
+    path('health/', lambda request: HttpResponse('OK'), name='health_check'),
 ]
 
 if settings.DEBUG:
