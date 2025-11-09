@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+{% block dashboard %}
+<!-- Carregue Chart.js PRIMEIRO -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Depois o ChartDataLabels -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+{% endblock %}
+
+{% block content %}
+
+<!--Gráfico com as medidas de glicose-->
+<div class="row mt-5">
+    <div class="col-12 mb-5">
+        <h1> Relatório de Medições </h1>
+    </div>
+    <div class="col-12">
+        <div class="btn-group" role="group" aria-label="BAR">
+            <a class="btn btn-sm btn-warning" href="{% url 'core:dashboard' %}" type="button"><i class="bi bi-arrow-left-circle"></i> Retornar</a>
+        </div>
+    </div>
+</div>
+
+<div class="row my-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body" style="overflow-x:scroll;">
+                <canvas id="graficoGlicose"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <table class="table table-sm table-bordered">
+            <thead>
+            <tr>
+                <th>Valor Da Medição</th>
+                <th>Tipo de Medição</th>
+                <th>Data da Medição</th>
+                <th>Observações</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for o in object_list %}
+            <tr>
+                <td>{{ o.valor_glicose }}</td>
+                <td>{{ o.get_tipo_medicao_display }}</td>
+                <td>{{ o.data_medicao }}</td>
+                <td>{{o.observacoes}}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot></tfoot>
+        </table>
+    </div>
+</div>
+
+
+
+<script>
+    Chart.register(ChartDataLabels);
+    const glicoseData = JSON.parse('{{ dados_json|escapejs }}');
+
+    // --- Gráfico de Barras de Glicose ---
+    const ctxGlicose = document.getElementById('graficoGlicose').getContext('2d');
+    const labels = glicoseData.map(item => new Date(item.data).toLocaleDateString());
+    const graficoGlicose = new Chart(ctxGlicose, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Glicose (mg/dL)',
+                data: glicoseData.map(item => item.valor),
+                backgroundColor: 'rgba(192,192,192,0.4)',
+                borderColor: 'white',
+                borderWidth: 1,
+                borderRadius: 5
+            }]
+        },
+        options: {
+            //indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 280,
+                    title: {
+                        display: true,
+                        text: 'Glicose (mg/dL)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Data'
+                    }
+                }
+            },
+            plugins: {
+                datalabels: {
+                    align: 'top',
+                    anchor: 'end',
+                    backgroundColor: 'rgb(75, 192, 192)',
+                    borderColor: 'white',
+                    borderRadius: 5,
+                    borderWidth: 1,
+                    color: 'white',
+                    font: {
+                        weight: 'bold',
+                        size: 11
+                    },
+                    formatter: function (value, context) {
+                        return value.toFixed(2);
+                    },
+                    padding: 6,
+                    offset: 8
+                },
+                title: {
+                    display: true,
+                    text: 'Histórico de Medições'
+                }
+            }
+        },
+        plugins: [{
+            afterDatasetsDraw(chart) {
+                const ctx = chart.ctx;
+                const yScale = chart.scales.y;
+                const xScale = chart.scales.x;
+
+                function drawHorizontalLine(value, color, label) {
+                    const y = yScale.getPixelForValue(value);
+
+                    ctx.save();
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(xScale.left, y);
+                    ctx.lineTo(xScale.right, y);
+                    ctx.stroke();
+
+                    if (label) {
+                        ctx.fillStyle = color;
+                        ctx.font = 'bold 12px Arial';
+                        ctx.textAlign = 'right';
+                        ctx.fillText(label, xScale.right - 10, y - 10);
+                    }
+                    ctx.restore();
+                }
+
+                drawHorizontalLine(180, '#dc354555', 'Muito Alta');
+                drawHorizontalLine(160, '#fd7e1455', 'Alta');
+                drawHorizontalLine(100, '#20c99755', 'Normal em Jejum');
+                drawHorizontalLine(70, '#007bff55', 'Hipoglicemia');
+            }
+        }]
+    });
+</script>
+
+{% endblock %}

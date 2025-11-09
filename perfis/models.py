@@ -85,6 +85,9 @@ class HistoricoBioTipo(models.Model):
     proximo_registro = models.DateField(editable=False, default=add_tempo)
     cintura = models.FloatField("Cintura", help_text="Cintura em CM", blank=False, null=False)
     quadril = models.FloatField("Quadril", help_text="Quadril em CM", blank=False, null=False)
+    braco = models.FloatField("Braço", help_text="Circunferência do braco em CM", blank=True, null=True)
+    perna = models.FloatField("Pernas", help_text="Circunferência da perna em CM", blank=True, null=True)
+    abdomen = models.FloatField("Abdômen", help_text="Circunferência abdominal em CM", blank=True, null=True)
 
     class Meta:
         ordering = ["-data_registro"]

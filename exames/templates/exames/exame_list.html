@@ -1,47 +1,53 @@
 {% extends "base.html" %}
 {% load django_bootstrap5 %}
 {% block content %}
-    <h1>Lista de Examos Realizados</h1>
-    <div class="container-fluid mt-3">
-        <div class="row my-3">
-            <div class="col">
-                {% bootstrap_button "Registrar" button_type="link" href="/exames/cadastra" size='sm' value='Registrar' %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Médico</th>
-                        <th>Especialidade</th>
-                        <th>Observações</th>
-                        <th>Data do Exame</th>
-                        <th>Arquivo</th>
-                        <th>Ações</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for o in object_list %}
-                        <tr>
-                            <td>{{ o.medico }}</td>
-                            <td>{{ o.especialidade }}</td>
-                            <td>{{ o.observacoes}}</td>
-                            <td>{{ o.data_exame }}</td>
-                            <td>{% if o.exame_arquivo.url is not None %}
-                            	<a href="{{ o.exame_arquivo.url }}">Ver exame</a>
-                            {% endif %} </td>
-                            <td><a href="{% url "exames:atualiza" pk=o.id %}" class="btn btn-sm btn-primary "><i
-                                    class="bi bi-pencil-fill"></i></a> |
-                                <a href="{% url "exames:deleta" pk=o.id %}" class="btn btn-sm btn-danger "><i
-                                        class="bi bi-trash-fill"></i></a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                    <tfoot></tfoot>
-                </table>
+<h1>Lista de Exames Realizados</h1>
+<div class="container-fluid mt-3">
+    <div class="row my-3">
+        <div class="col-5">
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <a class="btn btn-sm btn-warning" href="{% url 'core:dashboard' %}" type="button"><i
+                    class="bi bi-arrow-left-circle"></i> Retornar</a>
+                <a href="{% url 'exames:cadastra' %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle"></i>
+                Cadastrar Exame</a>
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Médico</th>
+                    <th>Especialidade</th>
+                    <th>Observações</th>
+                    <th>Data do Exame</th>
+                    <th>Arquivo</th>
+                    <th>Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for o in object_list %}
+                <tr>
+                    <td>{{ o.medico }}</td>
+                    <td>{{ o.especialidade }}</td>
+                    <td>{{ o.observacoes}}</td>
+                    <td>{{ o.data_exame }}</td>
+                    <td>{% if o.exame_arquivo.url is not None %}
+                        <a href="{{ o.exame_arquivo.url }}">Ver exame</a>
+                        {% endif %}
+                    </td>
+                    <td><a href="{% url 'exames:atualiza' pk=o.id %}" class="btn btn-sm btn-primary "><i
+                            class="bi bi-pencil-fill"></i></a> |
+                        <a href="{% url 'exames:deleta' pk=o.id %}" class="btn btn-sm btn-danger "><i
+                                class="bi bi-trash-fill"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot></tfoot>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock %}

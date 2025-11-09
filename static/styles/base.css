@@ -1,57 +1,87 @@
+:root {
+  --glico-primary: #2D6A4F;
+  --glico-secondary: #1B4965;
+  --glico-accent: #52B6CC;
+  --glico-alert: #F4A460;
+  --glico-danger: #C1121F;
+  --glico-text: #3E4C59;
+  --glico-light-bg: #f8f8f8;
+}
+
+/* Sobrescrever Bootstrap */
+.btn-primary { background-color: var(--glico-primary); border-color: var(--glico-primary); }
+.bg-primary { background-color: var(--glico-primary) !important; }
+.text-primary { color: var(--glico-primary) !important; }
+
+/* Tabela com alternância sutil */
+table tbody tr:nth-child(odd) { background-color: var(--glico-light-bg); }
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* { font-family: 'Inter', sans-serif; }
+
+h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; line-height: 1.2; }
+h2 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.3px; }
+body { font-size: 1rem; font-weight: 400; line-height: 1.5; color: var(--glico-text); }
+small { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.4px; }
+
+/* Melhorar leitura em valores numéricos */
+.glucose-value { font-family: 'Inter', monospace; font-weight: 600; font-size: 1.25rem; }
+
 body {
-	background-color: #fdfaf7 !important;
+	background-color: #FFF !important;
 	font-size: 1rem;
 }
 
 .parent {
-    display: grid;
-    grid-template-columns: .5fr repeat(3, 1fr);
-    grid-template-rows: .5fr repeat(3, 1fr);
-    column-gap: 8px;
-    min-height: 100vh;
-	height: auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(4, 1fr) 50px;  /* ← Última linha com altura fixa */
+  grid-column-gap: 5px;
+  grid-row-gap: 10px;
+  height: 100vh;
 }
 
-.div1{
-	background-color: #f1eeea;
+.div1 {
+  grid-area: 1 / 1 / 6 / 2;
 }
 
 .div2 {
-	grid-row: span 4 / span 4;
-	grid-column-start: 1;
-	grid-row-start: 2;
-	background-color: #f1eeea;
+  grid-area: 1 / 2 / 5 / 6;
+  font-size: small;
+  text-align: left;
+  overflow-y: scroll;
 }
 
 .div3 {
-	grid-column: span 4 / span 4;
-	grid-row: span 4 / span 4;
-	grid-column-start: 2;
-	grid-row-start: 1;
-	font-size: small;
-	text-align: left;
-	overflow-y: auto;
+  grid-area: 5 / 2 / 6 / 6;
+  font-size: small;
+  text-align: center;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;  /* Centraliza conteúdo verticalmente */
 }
 
-.div4 {
-	grid-column: span 4 / span 4;
-	grid-column-start: 2;
-	grid-row-start: 5;
-	font-size: small;
-	text-align: center;
+.div2 h1{
+color:#829f89;
 }
 
-.div3 h1{
-color:#4DA6AC;
+.div1 a{
+    color: var(--glico-text);
+}
+.div1 i{
+    color: var(--glico-text);
 }
 
-/*customizando menu*/
-
-.custon{
-	color: #2c7a7b;
-	font-weight: bold;
+.custon-bg{
+background-color:var(--glico-light-bg);
 }
 
-.card-body p{
-	font-weight: bold;
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    color: white;
+    background-color: var(--glico-primary);
+}
+.nav-link.active i{
+color: white;
 }

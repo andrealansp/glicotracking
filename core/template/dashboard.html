@@ -1,459 +1,439 @@
 {% extends "base.html" %}
 {% block dashboard %}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js"></script>
+<!-- Carregue Chart.js PRIMEIRO -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Depois o ChartDataLabels -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
 {% endblock %}
 {% block content %}
-    <div class="row justify-content-around my-3">
-        <div class="col-6 overflow-auto">
-            <div class="card">
-                <div class="card-body">
-                    <canvas id="graficoGlicoseDiaria"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 overflow-auto">
-            <div class="card">
-                <div class="card-body">
-                    <canvas id="graficoGlicoseMensal"></canvas>
-                </div>
+<div class="row justify-content-around my-3">
+    <div class="col-6 overflow-auto">
+        <div class="card">
+            <div class="card-body" style="overflow-x:scroll;">
+                <canvas id="graficoGlicoseDiaria"></canvas>
             </div>
         </div>
     </div>
-
-    <div class="row justify-content-around my-3">
-        <div class="col-6 ">
-            <div class="card">
-                <div class="card-body">
-                    <canvas id="graficoPesoImc"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="card">
-                <div class="card-body">
-                    <canvas id="graficoBiotipo"></canvas>
-                </div>
+    <div class="col-6 overflow-auto">
+        <div class="card">
+            <div class="card-body">
+                <canvas id="graficoGlicoseMensal"></canvas>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        Chart.register(ChartDataLabels);
-        const glicoseDiariaData = JSON.parse('{{ glicose_diaria|escapejs }}');
-        const glicoseMensalData = JSON.parse('{{ glicose_mensal|escapejs }}');
-        const historicoPesoImcData = JSON.parse('{{ historico_peso_imc|escapejs }}');
-        const historicoBiotipoData = JSON.parse('{{ historico_biotipo|escapejs }}');
+<div class="row justify-content-around my-3">
+    <div class="col-6 ">
+        <div class="card">
+            <div class="card-body">
+                <canvas id="graficoPesoImc"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card">
+            <div class="card-body">
+                <canvas id="graficoBiotipo"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
 
-        // --- Gráfico de Média Diária de Glicose ---
-        const ctxGlicoseDiaria = document.getElementById('graficoGlicoseDiaria').getContext('2d');
-        const graficoGlicoseDiaria = new Chart(ctxGlicoseDiaria, {
-            type: 'line',
-            data: {
-                labels: glicoseDiariaData.map(item => new Date(item.data).toLocaleDateString()),
-                datasets: [{
-                    label: 'Média Diária de Glicose (mg/dL)',
-                    data: glicoseDiariaData.map(item => item.media),
-                    backgroundColor: 'rgba(0,0,0,1)',
-                    borderColor: 'rgba(0, 0, 0, 1)',
-                    borderWidth: 2,
-                    fill: false
-                }]
-            },
-            options: {
-                // Mova a configuração do 'datalabels' para dentro de 'plugins' no nível correto
-                plugins: {
-                    annotation: {
-                        annotations: {
-                            // Linha: Muito Alta (180) - Vermelha
-                            muitoAlta: {
-                                type: 'line',
-                                yMin: 180,
-                                yMax: 180,
-                                borderColor: '#dc3545', // Cor vermelha mais escura
-                                borderWidth: 2,
-                                label: {
-                                    content: 'Muito Alta',
-                                    enabled: true,
-                                    position: 'end', // Posição à direita
-                                    backgroundColor: '#dc3545',
-                                    color: 'white',
-                                    font: {
-                                        size: 12,
-                                        weight: 'bold'
-                                    },
-                                    xAdjust: 50, // Ajuste horizontal do rótulo
-                                    yAdjust: -10 // Ajuste vertical para ficar um pouco acima da linha
-                                }
-                            },
-                            alta: {
-                                type: 'line',
-                                yMin: 160,
-                                yMax: 160,
-                                borderColor: '#fd7e14', // Cor laranja
-                                borderWidth: 2,
-                                label: {
-                                    content: 'Alta',
-                                    enabled: true,
-                                    position: 'end',
-                                    backgroundColor: '#fd7e14',
-                                    color: 'white',
-                                    font: {
-                                        size: 12,
-                                        weight: 'bold'
-                                    },
-                                    xAdjust: 0,
-                                    yAdjust: -10
-                                }
-                            },
-                            // Linha: Normal em Jejum (100) - Azul/Ciano
-                            normalEmJejum: {
-                                type: 'line',
-                                yMin: 100,
-                                yMax: 100,
-                                borderColor: '#20c997', // Cor verde-água (similar ao da imagem)
-                                borderWidth: 2,
-                                label: {
-                                    content: 'Normal em Jejum',
-                                    enabled: true,
-                                    position: 'end', // Posição à direita
-                                    backgroundColor: '#20c997',
-                                    color: 'white',
-                                    font: {
-                                        size: 12,
-                                        weight: 'bold'
-                                    },
-                                    xAdjust: 0,
-                                    yAdjust: -10
-                                }
-                            },
-                            // Linha: Hipoglicemia (70) - Verde
-                            hipoglicemia: {
-                                type: 'line',
-                                yMin: 70,
-                                yMax: 70,
-                                borderColor: '#007bff', // Cor azul (similar ao da imagem)
-                                borderWidth: 2,
-                                label: {
-                                    content: 'Hipoglicemia',
-                                    enabled: true,
-                                    position: 'start', // Posição à direita
-                                    backgroundColor: '#007bff',
-                                    color: 'black',
-                                    font: {
-                                        size: 12,
-                                        weight: 'bold'
-                                    },
-                                    xAdjust: 10,
-                                    yAdjust: -10
-                                }
-                            },
-                            // Linha extra: 60 (apenas linha, sem rótulo visível na imagem)
-                            linha60: {
-                                type: 'line',
-                                yMin: 60,
-                                yMax: 60,
-                                borderColor: 'gray', // Cor cinza para a linha
-                                borderWidth: 1,
-                                borderDash: [2, 2], // Linha tracejada, se desejar
-                                label: {
-                                    enabled: false // Desabilita o rótulo para esta linha
-                                }
-                            }
-                        }
-                    },
+<script>
+    Chart.register(ChartDataLabels);
+
+    const glicoseDiariaData = JSON.parse('{{ glicose_diaria|escapejs }}');
+    const glicoseMensalData = JSON.parse('{{ glicose_mensal|escapejs }}');
+    const historicoPesoImcData = JSON.parse('{{ historico_peso_imc|escapejs }}');
+    const historicoBiotipoData = JSON.parse('{{ historico_biotipo|escapejs }}');
+
+    // --- Gráfico de Média Diária de Glicose ---
+    const ctxGlicoseDiaria = document.getElementById('graficoGlicoseDiaria').getContext('2d');
+    const graficoGlicoseDiaria = new Chart(ctxGlicoseDiaria, {
+        type: 'line',
+        data: {
+            labels: glicoseDiariaData.map(item => new Date(item.data).toLocaleDateString()),
+            datasets: [{
+                label: 'Média Diária de Glicose (mg/dL)',
+                data: glicoseDiariaData.map(item => item.media),
+                backgroundColor: 'rgba(71,74,81,1)',
+                borderColor: 'rgba(0, 0, 0, 1)',
+                borderWidth: 1,
+                fill: false
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    min: 50,
+                    max: 280,
                     title: {
                         display: true,
-                        text: 'Média diária de Glicose' // Seu título desejado para o gráfico
-                    },
-                    // AQUI está a configuração do datalabels
-                    datalabels: {
-                        align: 'end', // Alinha o rótulo ao final do elemento (topo para pontos)
-                        anchor: 'end', // O ponto de ancoragem do rótulo é o final do elemento
-                        backgroundColor: function (context) {
-                            return context.dataset.backgroundColor; // Usa a cor de fundo do dataset
-                        },
-                        borderColor: 'white',
-                        borderRadius: 10,
-                        borderWidth: 2,
-                        color: 'white', // Cor do texto do datalabel
-                        font: {
-                            weight: 'bold'
-                        },
-                        formatter: function (value, context) {
-                            // Formata o valor que será exibido. Você pode personalizá-lo aqui.
-                            return value + ' mg/dL'; // Exemplo: 120 mg/dL
-                        },
-                        padding: 6,
-                        offset: 8 // Distância do datalabel ao ponto de dados
+                        text: 'Glicose (mg/dL)'
                     }
                 },
-                // As escalas devem estar fora da seção de plugins
-                scales: {
-                    y: {
-                        min: 50, // O eixo Y começa em 60, como na imagem
-                        max: 180, // O eixo Y termina em 180 (ou um pouco acima, se houver dados)
-                        ticks: {
-                            stepSize: 10 // Intervalo de 20 em 20 nos ticks do eixo Y
-                        },
-                        grid: {
-                            display: true, // Mostra as grades do eixo Y
-                            color: 'rgba(0, 0, 0, 0.1)' // Cor das grades
-                        }
+            },
+            plugins: {
+                datalabels: {
+                    align: 'end',
+                    anchor: 'end',
+                    backgroundColor: function (context) {
+                        return context.dataset.backgroundColor;
                     },
-                    x: {
-                        grid: {
-                            display: true, // Mostra as grades do eixo X
-                            color: 'rgba(0, 0, 0, 0.1)' // Cor das grades
-                        }
+                    borderColor: 'white',
+                    borderRadius: 5,
+                    borderWidth: 1,
+                    color: 'white',
+                    font: {
+                        weight: 'bold'
+                    },
+                    formatter: function (value, context) {
+                        return value.toFixed(2);
+                    },
+                    padding: 6,
+                    offset: 8
+                },
+                title: {
+                    display: true,
+                    text: 'Média Diária de Glicose no Mês'
+                }
+            }
+        },
+        plugins: [{
+            afterDatasetsDraw(chart) {
+                const ctx = chart.ctx;
+                const yScale = chart.scales.y;
+                const xScale = chart.scales.x;
+
+                function drawHorizontalLine(value, color, label) {
+                    const y = yScale.getPixelForValue(value);
+
+                    ctx.save();
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(xScale.left, y);
+                    ctx.lineTo(xScale.right, y);
+                    ctx.stroke();
+
+                    if (label) {
+                        ctx.fillStyle = color;
+                        ctx.font = 'bold 12px Arial';
+                        ctx.textAlign = 'right';
+                        ctx.fillText(label, xScale.right - 10, y - 10);
+                    }
+                    ctx.restore();
+                }
+
+                drawHorizontalLine(180, '#dc354566', 'Muito Alta');
+                drawHorizontalLine(160, '#fd7e1466', 'Alta');
+                drawHorizontalLine(100, '#20c99766', 'Normal em Jejum');
+                drawHorizontalLine(70, '#007bff66', 'Hipoglicemia');
+            }
+        }]
+    });
+
+    // --- Gráfico de Média Mensal de Glicose ---
+    const ctxGlicoseMensal = document.getElementById('graficoGlicoseMensal').getContext('2d');
+    const graficoGlicoseMensal = new Chart(ctxGlicoseMensal, {
+        type: 'line',
+        data: {
+            labels: glicoseMensalData.map(item => new Date(item.mes).toLocaleDateString('pt-BR', {
+                month: 'long',
+                year: 'numeric'
+            })),
+            datasets: [{
+                label: 'Média Mensal de Glicose (mg/dL)',
+                data: glicoseMensalData.map(item => item.media),
+                backgroundColor: 'rgba(75, 192, 192, 1)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2,
+                fill: false,
+                datalabels: {
+                    align: "end",
+                    padding: 6,
+                    borderRadius: 10,
+                    textAlign: "center",
+                    anchor: "middle",
+                    formatter: function (value) {
+                        return value.toFixed(2) + ' mg/dL';
+                    }
+                }
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    title: {
+                        display: true,
+                        text: 'Valor da Glicose (mg/dL)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Mês'
                     }
                 }
             },
-        });
-        // --- Gráfico de Média Mensal de Glicose ---
-        const ctxGlicoseMensal = document.getElementById('graficoGlicoseMensal').getContext('2d');
-        const graficoGlicoseMensal = new Chart(ctxGlicoseMensal, {
-            type: 'line',
-            data: {
-                labels: glicoseMensalData.map(item => new Date(item.mes).toLocaleDateString('pt-BR', {
-                    month: 'long',
-                    year: 'numeric'
-                })),
-                datasets: [{
-                    label: 'Média Mensal de Glicose (mg/dL)',
-                    data: glicoseMensalData.map(item => item.media),
-                    backgroundColor: 'grey',
-                    borderColor: 'rgba(255, 99, 132, 1)',
+            plugins: {
+                datalabels: {
+                    align: 'end',
+                    anchor: 'end',
+                    backgroundColor: function (context) {
+                        return context.dataset.backgroundColor;
+                    },
+                    borderColor: 'white',
+                    borderRadius: 10,
                     borderWidth: 2,
-                    fill: false,
-                    datalabels: {
-                        align: "end",
-                        padding: 6,
-                        borderRadius: 10,
-                        textAlign: "center",
-                        anchor: "middle",
-                        formatter: function (value) {
-                            return value + ' mg/dL';
-                        }
-
-                    }
-                }]
-            },
-            options: {
-                plugins: {
-                    datalabels: {
-                        align: 'end', // Alinha o rótulo ao final do elemento (topo para pontos)
-                        anchor: 'end', // O ponto de ancoragem do rótulo é o final do elemento
-                        backgroundColor: function (context) {
-                            return context.dataset.backgroundColor; // Usa a cor de fundo do dataset
-                        },
-                        borderColor: 'white',
-                        borderRadius: 10,
-                        borderWidth: 2,
-                        color: 'white', // Cor do texto do datalabel
-                        font: {
-                            weight: 'bold'
-                        },
-                        formatter: function (value, context) {
-                            // Formata o valor que será exibido. Você pode personalizá-lo aqui.
-                            return value + ' mg/dL'; // Exemplo: 120 mg/dL
-                        },
-                        padding: 6,
-                        offset: 8 // Distância do datalabel ao ponto de dados
+                    color: 'white',
+                    font: {
+                        weight: 'bold'
                     },
-                    title: {
-                        display: true,
-                        text: 'Média Mensal de Glicose' // Your desired chart title
-                    }
+                    formatter: function (value, context) {
+                        return value + ' mg/dL';
+                    },
+                    padding: 6,
+                    offset: 8
                 },
-                scales: {
-                    y: {
-                        beginAtZero: false,
-                        title: {
-                            display: true,
-                            text: 'Valor da Glicose (mg/dL)'
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Mês'
-                        }
-                    }
+                title: {
+                    display: true,
+                    text: 'Média Mensal de Glicose'
                 }
             }
-        });
-        // --- Gráfico de Peso e IMC ao Longo do Tempo ---
-        const ctxPesoImc = document.getElementById('graficoPesoImc').getContext('2d');
-        const graficoPesoImc = new Chart(ctxPesoImc, {
-            type: 'line',
-            data: {
-                labels: historicoPesoImcData.map(item => new Date(item.data_registro).toLocaleDateString()),
-                datasets: [{
-                    label: 'Peso (kg)',
-                    data: historicoPesoImcData.map(item => parseFloat(item.peso_kg)),
-                    backgroundColor: 'rgba(75, 192, 192, 1)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 2,
-                    fill: false,
-                    yAxisID: 'y-peso'
-                }, {
-                    label: 'IMC',
-                    data: historicoPesoImcData.map(item => parseFloat(item.imc)),
-                    backgroundColor: 'rgba(255, 206, 86, 1)',
-                    borderColor: 'rgba(255, 206, 86, 1)',
-                    borderWidth: 2,
-                    fill: false,
-                    datalabels: {
-                        formatter: function (value, context) {
-                            // Formata o valor que será exibido. Você pode personalizá-lo aqui.
-                            return value + " Kg/m2"; // Exemplo: 120 mg/dL
-                        },
-                    },
-                    yAxisID: 'y-imc'
-                }]
-            },
-            options: {
-                plugins: {
-                    datalabels: {
-                        align: 'end', // Alinha o rótulo ao final do elemento (topo para pontos)
-                        anchor: 'end', // O ponto de ancoragem do rótulo é o final do elemento
-                        backgroundColor: function (context) {
-                            return context.dataset.backgroundColor; // Usa a cor de fundo do dataset
-                        },
-                        borderRadius: 10,
-                        borderWidth: 2,
-                        color: 'white', // Cor do texto do datalabel
-                        font: {
-                            weight: 'bold'
-                        },
-                        formatter: function (value, context) {
-                            // Formata o valor que será exibido. Você pode personalizá-lo aqui.
-                            return value + ' kg'; // Exemplo: 120 mg/dL
-                        },
-                        padding: 6,
-                        offset: 8 // Distância do datalabel ao ponto de dados
-                    },
-                    title: {
-                        display: true,
-                        text: 'Peso e IMC' // Your desired chart title
+        }
+    });
+    <!-- Gráfico de barras agrupadas com peso e IMC -->
+    const ctxPesoImc = document.getElementById('graficoPesoImc').getContext('2d');
+    const graficoPesoImc = new Chart(ctxPesoImc, {
+        type: 'bar',
+        data: {
+            labels: historicoPesoImcData.map(item => new Date(item.data_registro).toLocaleDateString()),
+            datasets: [{
+                label: 'Peso (kg)',
+                data: historicoPesoImcData.map(item => parseFloat(item.peso_kg)),
+                backgroundColor: 'rgba(75, 192, 192, 0.4)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                yAxisID: 'y-peso'
+            }, {
+                label: 'IMC',
+                data: historicoPesoImcData.map(item => parseFloat(item.imc)),
+                backgroundColor: 'rgba(255, 206, 86, 0.4)',
+                borderColor: 'rgba(255, 206, 86, 1)',
+                borderWidth: 1,
+                datalabels: {
+                    formatter: function (value, context) {
+                        return value + " Kg/m2";
                     }
                 },
-                scales: {
-                    'y-peso': {
-                        type: 'linear',
-                        position: 'left',
-                        title: {
-                            display: true,
-                            text: 'Peso (kg)'
-                        }
+                yAxisID: 'y-imc'
+            }]
+        },
+        options: {
+            scales: {
+                'y-peso': {
+                    type: 'linear',
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: 'Peso (kg)'
+                    }
+                },
+                'y-imc': {
+                    type: 'linear',
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'IMC'
                     },
-                    'y-imc': {
-                        type: 'linear',
-                        position: 'right',
-                        title: {
-                            display: true,
-                            text: 'IMC'
-                        },
-                        grid: {
-                            drawOnChartArea: false, // Impede que as linhas do grid do IMC sobreponham o gráfico de peso
-                        },
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Data'
-                        }
+                    grid: {
+                        drawOnChartArea: false
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Data'
                     }
                 }
-            }
-        });
-        // --- Gráfico de Peso e IMC ao Longo do Tempo ---
-        const ctxBiotipo = document.getElementById('graficoBiotipo').getContext('2d');
-        const graficBiotipo = new Chart(ctxBiotipo, {
-            type: 'line',
-            data: {
-                labels: historicoBiotipoData.map(item => new Date(item.data_registro).toLocaleDateString()),
-                datasets: [{
-                    label: 'Cintura',
-                    data: historicoBiotipoData.map(item => parseFloat(item.cintura)),
-                    backgroundColor: 'rgb(49,103,237)',
-                    borderColor: 'rgb(49,103,237)',
-                    borderWidth: 2,
-                    datalabels: {
-                        borderRadius: 10,
-                        backgroundColor: 'rgb(49,103,237)',
-                        align: "end",
-                        padding: 6,
-                        textAlign: "center",
-                        anchor: "middle",
-                        formatter: function (value) {
-                            return value + ' CM';
-                        },
-                        color: 'white',
-
-                    },
-                    fill: false,
-                    yAxisID: 'y-cintura'
-                }, {
-                    label: 'Quadril',
-                    data: historicoBiotipoData.map(item => parseFloat(item.quadril)),
-                    backgroundColor: 'rgba(75, 192, 192, 1)',
-                    borderColor: 'rgba(50,182,41,1)',
-                    borderWidth: 2,
-                    fill: false,
-                    datalabels: {
-                        borderRadius: 10,
-                        backgroundColor: 'rgba(50,182,41,1)',
-                        align: "end",
-                        padding: 6,
-                        textAlign: "center",
-                        anchor: "middle",
-                        formatter: function (value) {
-                            return value + ' CM';
-                        }
-
-                    },
-                    yAxisID: 'y-quadril'
-                }]
             },
-            options: {
-                plugins: {
+            plugins: {
+                datalabels: {
+                    align: 'end',
+                    anchor: 'end',
+                    backgroundColor: function (context) {
+                        return context.dataset.borderColor;
+                    },
+                    borderRadius: 10,
+                    borderWidth: 2,
+                    color: 'white',
+                    font: {
+                        weight: 'bold'
+                    },
+                    formatter: function (value, context) {
+                        return value + ' kg';
+                    },
+                    padding: 6,
+                    offset: 8
+                },
+                title: {
+                    display: true,
+                    text: 'Peso e IMC'
+                }
+            }
+        }
+    });
+
+    // --- Gráfico de Biotipo ---
+    const ctxBiotipo = document.getElementById('graficoBiotipo').getContext('2d');
+    const graficBiotipo = new Chart(ctxBiotipo, {
+        type: 'bar',  // ← Mudou de 'line' para 'bar'
+        data: {
+            labels: historicoBiotipoData.map(item => new Date(item.data_registro).toLocaleDateString()),
+            grouped: true,
+            datasets: [{
+                label: 'Cintura',
+                data: historicoBiotipoData.map(item => parseFloat(item.cintura)),
+                backgroundColor: 'rgb(49, 103, 237)',
+                borderColor: 'rgb(49, 103, 237)',
+                borderWidth: 1,
+                barThickness: 30,
+                datalabels: {
+                    backgroundColor: 'rgb(49, 103, 237)',
+                    align: "end",
+                    padding: 6,
+                    textAlign: "center",
+                    anchor: "end",
+                    formatter: function (value) {
+                        return value;
+                    },
+                    color: 'white',
+                    font: {
+                        weight: 'bold',
+                        size: 10
+                    }
+                }
+            }, {
+                label: 'Quadril',
+                data: historicoBiotipoData.map(item => parseFloat(item.quadril)),
+                backgroundColor: 'rgba(50, 182, 41, 0.9)',
+                borderColor: 'rgba(50, 182, 41, 1)',
+                borderWidth: 1,
+                barThickness: 30,
+                datalabels: {
+                    backgroundColor: 'rgba(50, 182, 41, 1)',
+                    align: "end",
+                    padding: 6,
+                    textAlign: "center",
+                    anchor: "end",
+                    formatter: function (value) {
+                        return value;
+                    },
+                    color: 'white',
+                    font: {
+                        weight: 'bold',
+                        size: 10
+                    }
+                }
+            }, {
+                label: 'Braços',
+                data: historicoBiotipoData.map(item => parseFloat(item.braço)),
+                backgroundColor: 'rgba(255, 159, 64, 0.9)',
+                borderColor: 'rgba(255, 159, 64, 1)',
+                borderWidth: 1,
+                barThickness: 30,
+                datalabels: {
+                    backgroundColor: 'rgba(255, 159, 64, 1)',
+                    align: "end",
+                    padding: 6,
+                    textAlign: "center",
+                    anchor: "end",
+                    formatter: function (value) {
+                        return value;
+                    },
+                    color: 'white',
+                    font: {
+                        weight: 'bold',
+                        size: 10
+                    }
+                }
+            }, {
+                label: 'Perna',
+                data: historicoBiotipoData.map(item => parseFloat(item.perna)),
+                backgroundColor: 'rgba(153, 102, 255, 0.9)',
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 1,
+                barThickness: 30,
+                datalabels: {
+                    backgroundColor: 'rgba(153, 102, 255, 1)',
+                    align: "end",
+                    padding: 6,
+                    textAlign: "center",
+                    anchor: "end",
+                    formatter: function (value) {
+                        return value;
+                    },
+                    color: 'white',
+                    font: {
+                        weight: 'bold',
+                        size: 10
+                    }
+                }
+            }, {
+                label: 'Abdômen',
+                data: historicoBiotipoData.map(item => parseFloat(item.abdomen)),
+                backgroundColor: 'rgba(255, 99, 132, 0.9)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+                barThickness: 30,
+                datalabels: {
+                    backgroundColor: 'rgba(255, 99, 132, 1)',
+                    align: "end",
+                    padding: 6,
+                    textAlign: "center",
+                    anchor: "end",
+                    formatter: function (value) {
+                        return value;
+                    },
+                    color: 'white',
+                    font: {
+                        weight: 'bold',
+                        size: 10
+                    }
+                }
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    min: 0,
+                    max: 190,
                     title: {
                         display: true,
-                        text: 'Peso e IMC'
+                        text: 'Circunferência (CM)'
                     }
                 },
-                scales: {
-                    'y-cintura': {
-                        type: 'linear',
-                        position: 'left',
-                        title: {
-                            display: true,
-                            text: 'Cintura'
-                        }
-                    },
-                    'y-cintura': {
-                        type: 'linear',
-                        position: 'right',
-                        title: {
-                            display: true,
-                            text: 'Quadril'
-                        },
-                        grid: {
-                            drawOnChartArea: false, // Impede que as linhas do grid do IMC sobreponham o gráfico de peso
-                        },
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Data'
-                        }
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Data'
                     }
-                },
-
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Biotipo'
+                }
             }
-        });
-    </script>
+        }
+    });
+</script>
 {% endblock %}

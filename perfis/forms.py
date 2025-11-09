@@ -36,4 +36,4 @@ class HistoricoPesoImcForm(forms.ModelForm):
 class HistoricoBiotipoForm(forms.ModelForm):
     class Meta:
         model = HistoricoBioTipo
-        fields = ['cintura','quadril']
+        fields = ['cintura','quadril','braco','perna',"abdomen"]

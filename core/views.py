@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.views.generic import TemplateView
 from django.db.models import Avg
 from django.db.models.functions import TruncDay, TruncMonth, TruncYear, TruncDate
@@ -7,6 +9,9 @@ from perfis.models import HistoricoPesoImc, Perfil, HistoricoBioTipo
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 class RelatorioMedicoesView(TemplateView):
@@ -18,9 +23,11 @@ class RelatorioMedicoesView(TemplateView):
         perfil = self.request.user.perfil  # Assumindo que cada usuário tem um perfil relacionado
 
         # --- Dados para o gráfico de glicose ---
-        glicose_diaria = (Medicao.objects.filter(perfil=perfil).
+        glicose_diaria = (Medicao.objects.filter(perfil=perfil,data_medicao__month=datetime.today().month).
                           annotate(data=TruncDate('data_medicao')).values('data').
                           annotate(media=Avg('valor_glicose')).order_by('data'))
+
+        
 
         glicose_diaria_lista = [{'data': item['data'].isoformat(), 'media': item['media']} for item in glicose_diaria]
 
@@ -46,6 +53,9 @@ class RelatorioMedicoesView(TemplateView):
             "data_registro": item.data_registro.isoformat(),
             "cintura": item.cintura,
             "quadril": item.quadril,
+            "braço": item.braco,
+            "abdomen": item.abdomen,
+            "perna": item.perna,
         } for item in historico_biotipo]
 
         context['glicose_diaria'] = json.dumps(glicose_diaria_lista, cls=DjangoJSONEncoder)
