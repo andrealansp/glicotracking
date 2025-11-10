@@ -1,6 +1,29 @@
-version: '3.9'
+version: '3.8'
 
 services:
+  db:
+    container_name: glico_db
+    image: postgres:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5433:5432"
+    networks:
+      - alvesdevpynet
+
+
   django:
       container_name: glico_django
       build:
@@ -9,14 +32,20 @@ services:
       restart: unless-stopped
       env_file:
         - .env
-      command: "gunicorn app.wsgi:application --bind 0.0.0.0:8000"
+      command: python manage.py makemigrations &&  
+             python manage.py migrate &&  
+             python manage.py collectstatic --noinput &&  
+             gunicorn app.wsgi:application --bind 0.0.0.0:8000"
       volumes:
         - ./glicotracking:/app # Assumindo que sua aplicação Django está na pasta 'app'
         - static_volume:/glicotracking/static
         - media_volume:/glicotracking/media
+      depends_on:
+        db:
+          condition: service_healthy
       networks:
         - alvesdevpynet
-      labels: # Habilita o Traefik para este serviço
+      labels:       # Habilita o Traefik para este serviço
         - "traefik.enable=true"        # Roteador HTTP para redirecionar para HTTPS
         - "traefik.http.routers.django-http.entrypoints=http"
         - "traefik.http.routers.django-http.rule=Host(`${DOMAIN_NAME}`) || Host(`www.${DOMAIN_NAME}`)"
@@ -30,6 +59,8 @@ services:
         - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"        # Configuração do serviço de backend do Traefik
         - "traefik.http.services.django.loadbalancer.server.port=8000"
         - "traefik.docker.network=alvesdevpynet" # Especifica a rede para o Traefik
+      ports:
+        - "8000:8000"
 volumes:
   db_data:
   static_volume:
