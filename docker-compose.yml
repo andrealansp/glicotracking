@@ -15,7 +15,7 @@ services:
         - static_volume:/glicotracking/static
         - media_volume:/glicotracking/media
       networks:
-        - alvesdevpynet
+        - gliconet
       labels: # Habilita o Traefik para este serviço
         - "traefik.enable=true"        # Roteador HTTP para redirecionar para HTTPS
         - "traefik.http.routers.django-http.entrypoints=http"
@@ -36,5 +36,4 @@ volumes:
   media_volume:
 
 networks:
-  alvesdevpynet:
-    external: true
+  gliconet:
