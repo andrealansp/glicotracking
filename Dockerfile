@@ -21,7 +21,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Comando para coletar arquivos estáticos
 RUN python manage.py collectstatic --noinput
-RUN python manage.py migrate
+
 
 # Expose a porta que o Gunicorn vai escutar internamente
 EXPOSE 8000
