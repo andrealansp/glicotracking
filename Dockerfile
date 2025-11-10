@@ -28,4 +28,4 @@ EXPOSE 8000
 
 # Comando padrão para iniciar o Gunicorn (pode ser sobrescrito pelo docker-compose)
 # Substitua 'myproject' pelo nome real do seu projeto Django
-CMD ["gunicorn", "app.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn","app.wsgi:application","--bind","0.0.0.0:8000"]
