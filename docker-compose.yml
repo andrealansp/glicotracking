@@ -18,13 +18,13 @@ services:
         - gliconet
       labels: # Habilita o Traefik para este serviço
         - "traefik.enable=true"        # Roteador HTTP para redirecionar para HTTPS
-        - "traefik.http.routers.django-http.entrypoints=http"
-        - "traefik.http.routers.django-http.rule=Host(`${DOMAIN_NAME}`) || Host(`www.${DOMAIN_NAME}`)"
-        - "traefik.http.routers.django-http.middlewares=https-redirect@docker"        # Roteador HTTPS principal
-        - "traefik.http.routers.django-https.entrypoints=https"
-        - "traefik.http.routers.django-https.rule=Host(`${DOMAIN_NAME}`) || Host(`www.${DOMAIN_NAME}`)"
-        - "traefik.http.routers.django-https.tls=true"
-        - "traefik.http.routers.django-https.tls.certresolver=le" # Certresolver 'le' para Let's Encrypt
+        - "traefik.http.routers.glicotracking.rule=Host(`glicotracking.alvesdevpy.com.br`)"
+        - "traefik.http.routers.glicotracking.entrypoints=websecure"
+        - "traefik.http.routers.glicotracking.tls.certresolver=letsencrypt"
+        - "traefik.http.services.glicotracking.loadbalancer.server.port=8000"
+        - "traefik.http.routers.glicotracking.rule=Host(`${DOMAIN_NAME}`) || Host(`www.${DOMAIN_NAME}`)"
+        - "traefik.http.routers.glicotracking.tls=true"
+        - "traefik.http.routers.glicotracking.tls.certresolver=le" # Certresolver 'le' para Let's Encrypt
         # Middleware para redirecionamento HTTP para HTTPS
         - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
         - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"        # Configuração do serviço de backend do Traefik

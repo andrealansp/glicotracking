@@ -4,6 +4,10 @@ FROM python:3.15.0a1-slim
 # Define o diretório de trabalho dentro do contêiner
 WORKDIR /glicotracking
 
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+
 RUN apt-get update && apt-get install -y \
     postgresql-client \
     libpq-dev \
@@ -28,4 +32,4 @@ EXPOSE 8000
 
 # Comando padrão para iniciar o Gunicorn (pode ser sobrescrito pelo docker-compose)
 # Substitua 'myproject' pelo nome real do seu projeto Django
-CMD ["gunicorn","app.wsgi:application","--bind","0.0.0.0:8000"]
+CMD ["gunicorn","app.wsgi:application","--bind","--workers","4","0.0.0.0:8000"]
