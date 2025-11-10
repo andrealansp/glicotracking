@@ -11,7 +11,7 @@ services:
         - .env
       command: "gunicorn app.wsgi:application --bind 0.0.0.0:8000"
       volumes:
-        - ./glicotracking:/app # Assumindo que sua aplicação Django está na pasta 'app'
+        - ./glicotracking:/glicotracking
         - static_volume:/glicotracking/static
         - media_volume:/glicotracking/media
       networks:
