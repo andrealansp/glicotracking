@@ -10,22 +10,21 @@ RUN apt-get update && apt-get install -y \
     gcc \
     && rm -rf /var/lib/apt/lists/
 
-# Copia o arquivo de requisitos e instala as dependências
+# Copia os arquivos
+COPY . .
+
+#  Atualiza o PIP
+RUN pip install --upgrade pip
+
 # Usa --no-cache-dir para evitar o armazenamento de cache pip e reduzir o tamanho da imagem
-COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
 # Comando para coletar arquivos estáticos
 RUN python manage.py collectstatic --noinput
 RUN python manage.py migrate
 
-# Copia o restante do código da aplicação para o diretório de trabalho
-# Certifique-se de que sua aplicação Django (incluindo manage.py e o diretório do projeto) esteja na pasta 'app' no host
-COPY app/ .
-
 # Expose a porta que o Gunicorn vai escutar internamente
 EXPOSE 8000
-
-
 
 # Comando padrão para iniciar o Gunicorn (pode ser sobrescrito pelo docker-compose)
 # Substitua 'myproject' pelo nome real do seu projeto Django
