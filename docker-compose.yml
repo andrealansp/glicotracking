@@ -2,7 +2,10 @@ version: "3.9"
 
 services:
   glicotck:
-    image: glicotracking-django:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
     command: gunicorn app.wsgi:application --bind 0.0.0.0:8000
     environment:
       - DJANGO_SETTINGS_MODULE=app.settings
