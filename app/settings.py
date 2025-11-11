@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ['glicotracking.alvesdevpy.com.br', '127.0.0.1', 'localhost']
-CSRF_TRUSTED_ORIGINS = ["https://glicotracking.alvesdevpy.com.br", "www.glicotracking.alvesdevpy.com.br"]
+CSRF_TRUSTED_ORIGINS = ["https://glicotracking.alvesdevpy.com.br", "http://www.glicotracking.alvesdevpy.com.br"]
 
 # Reconhecer HTTPS por trás do Traefik
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
   --glico-primary: #2D6A4F;
   --glico-secondary: #1B4965;
@@ -15,8 +17,6 @@
 
 /* Tabela com alternância sutil */
 table tbody tr:nth-child(odd) { background-color: var(--glico-light-bg); }
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 * { font-family: 'Inter', sans-serif; }
 
@@ -36,7 +36,7 @@ body {
 .parent {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(4, 1fr) 50px;  /* ← Última linha com altura fixa */
+  grid-template-rows: repeat(4, 1fr) 50px;
   grid-column-gap: 5px;
   grid-row-gap: 10px;
   height: 100vh;
@@ -84,4 +84,98 @@ background-color:var(--glico-light-bg);
 }
 .nav-link.active i{
 color: white;
+}
+/* Nav expandida (padrão) */
+.div1 {
+    grid-area: 1 / 1 / 6 / 2;
+    transition: all 0.3s ease-in-out;
+    width: auto;
+    min-width: 250px;
+}
+
+/* Nav recolhida */
+.div1.recolhida {
+    grid-area: 1 / 1 / 6 / 1;
+    min-width: 80px;
+    width: 80px;
+}
+
+.div1.recolhida .d-flex img {
+    width: 50px !important;
+    height: auto;
+}
+
+.div1.recolhida hr {
+    display: none;
+}
+
+/* Esconde logo e texto do logo */
+.div1.recolhida > a {
+    display: none;
+}
+
+/* Estilo dos links recolhidos - mostra só ícone */
+.div1.recolhida .nav-link {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    padding: 0.75rem 0.5rem !important;
+    position: relative;
+    font-size: 0;
+}
+
+.div1.recolhida .nav-link i {
+    font-size: 1.5rem;
+    margin-right: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/* Tooltip ao passar mouse */
+.div1.recolhida .nav-link::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin-left: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    font-size: 0.85rem;
+    z-index: 1000;
+}
+
+.div1.recolhida .nav-link:hover::after {
+    opacity: 1;
+}
+
+/* Botão de logout recolhido */
+.div1.recolhida .nav-link.custon {
+    font-size: 0;
+}
+
+.div1.recolhida .nav-link.custon i {
+    font-size: 1.5rem;
+}
+
+/* Ajusta grid quando nav recolhe */
+.parent.nav-collapsed {
+    grid-template-columns: 80px repeat(4, 1fr);
+}
+
+.parent.nav-collapsed .div2,
+.parent.nav-collapsed .div3 {
+    grid-column: 2 / 6;
+}
+
+.btn-size-custon{
+position: absolute;
+top: 10px;
+right: 10px;
+z-index: 10;
+height:50px;
+width:50px;
 }

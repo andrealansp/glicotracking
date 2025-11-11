@@ -18,50 +18,74 @@
 <body>
 
 <div class="parent">
-    <nav class="div1 d-flex flex-column flex-shrink-0 p-3 text-white custon-bg">
+    <button id="toggleNav" class="btn btn-sm btn-size-custon" style="">
+        <i class="bi bi-list"></i>
+    </button>
+    <nav class="div1 d-flex flex-column flex-shrink-0 p-3 text-white custon-bg recolhida">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
             <img src={% static "images/logo.png" %} width="200px" alt="">
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a href="{% url "medicoes:lista" %}" class="nav-link custon"><i class="bi bi-clipboard2-pulse-fill"></i>
-                 Medições</a>
+                <a href="{% url 'core:dashboard' %}" class="nav-link custon" data-tooltip="Dashboard">
+                <i class="bi bi-speedometer2"></i>
+                Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'medicoes:lista' %}" class="nav-link custon" data-tooltip="Medições">
+                <i class="bi bi-clipboard2-pulse-fill"></i>
+                Medições
+                </a>
             </li>
             <li>
-                <a href="{% url "perfis:peso_lista" %}" class="nav-link custon"><i
-                    class="bi bi-calculator-fill"></i>
-                Registrar Peso</a>
+                <a href="{% url 'perfis:peso_lista' %}" class="nav-link custon" data-tooltip="Registrar Peso">
+                <i class="bi bi-calculator-fill"></i>
+                Registrar Peso
+                </a>
             </li>
             <li>
-                <a href="{% url "perfis:biotipo_lista" %}" class="nav-link custon"><i
-                    class="bi bi-person-arms-up"></i>
-                Registrar Biotipo</a>
+                <a href="{% url 'perfis:biotipo_lista' %}" class="nav-link custon" data-tooltip="Registrar Biotipo">
+                <i class="bi bi-person-arms-up"></i>
+                Registrar Biotipo
+                </a>
             </li>
             <li>
-                <a href="{% url "planos:lista" %}" class="nav-link custon"><i class="bi bi-list"></i> Plano
-                Alimentar</a>
+                <a href="{% url 'planos:lista' %}" class="nav-link custon" data-tooltip="Plano Alimentar">
+                <i class="bi bi-list"></i>
+                Plano Alimentar
+                </a>
             </li>
             <li>
-                <a href="{% url "exames:lista" %}" class="nav-link custon"><i
-                    class="bi bi-file-earmark-arrow-up-fill"></i> Exames</a>
+                <a href="{% url 'exames:lista' %}" class="nav-link custon" data-tooltip="Exames">
+                <i class="bi bi-file-earmark-arrow-up-fill"></i>
+                Exames
+                </a>
             </li>
             <li>
-                <a href="{% url "perfis:perfil" user.perfil.slug %}" class="nav-link custon"><i
-                    class="bi bi-person-fill"></i> Perfil</a>
+                <a href="{% url 'perfis:perfil' user.perfil.slug %}" class="nav-link custon" data-tooltip="Perfil">
+                <i class="bi bi-person-fill"></i>
+                Perfil
+                </a>
             </li>
         </ul>
+
         <hr>
+
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <form action="/logout" method="post">
+                <form action="/logout" method="post" style="width: 100%;">
                     {% csrf_token %}
-                    <button class="nav-link custon">
-                        <i class="bi bi-box-arrow-right"></i> Sair do Sistema
+                    <button class="nav-link custon w-100" data-tooltip="Sair">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Sair do Sistema</span>
                     </button>
                 </form>
             </li>
         </ul>
+
+
     </nav>
     <div class="div2">
         {% block content %}

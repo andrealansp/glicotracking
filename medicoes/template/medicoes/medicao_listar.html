@@ -16,26 +16,23 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-12">
+        <div class="col-12 col-md-12">
             <form method="get">
                 <div class="row">
                     {% csrf_token %}
-                    <div class="col-3">
+                    <div class="col-3 col-md-3">
                         {% bootstrap_field form.tipo_medicao show_label='skip' size="sm" %}
                     </div>
-                    <div class="col-3">
+                    <div class="col-3 col-md-3">
                         {% bootstrap_field form.mes show_label='skip' size="sm" %}
                     </div>
-                    <div class="col-3">
+                    <div class="col-6 col-md-6">
                         {% bootstrap_button "Enviar" size="sm" %}
                         <a href="{% url 'medicoes:relatorio'%}?tipo_medicao={{ request.GET.tipo_medicao }}&mes={{ request.GET.mes }}"
                            class="btn btn-primary btn-sm"><i class="bi bi-download" ></i> Gerar Relatório de Medições</a>
                     </div>
                 </div>
             </form>
-        </div>
-        <div class="col-3">
-
         </div>
     </div>
     <div class="row">
