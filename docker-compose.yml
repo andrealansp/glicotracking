@@ -15,7 +15,6 @@ services:
       - media_volume:/glicotracking/media
     networks:
       - gliconet
-      - traefik_net
 
     deploy:
       mode: replicated
@@ -45,6 +44,3 @@ volumes:
 networks:
   gliconet:
     driver: bridge
-  traefik_net:
-    external: true
-    name: alvesdevpynet
