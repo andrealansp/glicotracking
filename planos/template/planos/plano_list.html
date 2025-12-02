@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 {% load django_bootstrap5 %}
 {% block content %}
-    <h1>Plano Alimentar</h1>
+    <h1  class="m-2 text-center">Plano Alimentar</h1>
     <div class="container-fluid mt-3">
-        <div class="row my-3">
+        <div class="row p-3 bg m-3">
             <div class="col">
                 <div class="btn-group" role="group" aria-label="Basic example">
-                    <a class="btn btn-sm btn-warning" href="{% url "core:dashboard" %}" type="button"><i class="bi bi-arrow-left-circle"></i> Retornar</a>
-                    <a href="{% url "planos:registra" %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle"></i> Registrar Receita</a>
+                    <a class="btn btn-sm btn-warning" href="{% url 'core:dashboard' %}" type="button"><i class="bi bi-arrow-left-circle"></i> Retornar</a>
+                    <a href="{% url 'planos:registra' %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle"></i> Registrar Receita</a>
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row p-3 bg m-3">
             <div class="col">
                 <table class="table table-bordered">
                     <thead>

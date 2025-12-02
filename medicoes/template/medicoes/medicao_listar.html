@@ -5,17 +5,19 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
 {% endblock %}
 {% block content %}
-<h1>Acompanhamento da Glicose no Sangue do Paciente</h1>
+<h1 class="m-2 text-center">Acompanhamento da Glicose no Sangue do Paciente</h1>
 <div class="container-fluid mt-3">
-    <div class="row my-3">
+    <div class="row p-3 bg m-3">
         <div class="col">
             <div class="btn-group" role="group" aria-label="Basic example">
                 <a class="btn btn-sm btn-warning" href="{% url 'core:dashboard' %}" type="button"><i class="bi bi-arrow-left-circle"></i> Retornar</a>
                 <a href="{% url 'medicoes:registra' %}" class="btn btn-primary btn-sm"> <i class="bi bi-plus-circle"></i> Registrar Medição</a>
+                <a href="{% url 'medicoes:relatorio'%}?tipo_medicao={{ request.GET.tipo_medicao }}&mes={{ request.GET.mes }}"
+                           class="btn btn-secondary btn-sm"><i class="bi bi-download" ></i> Gerar Relatório de Medições</a>
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row m-3 bg p-4" >
         <div class="col-12 col-md-12">
             <form method="get">
                 <div class="row">
@@ -28,14 +30,12 @@
                     </div>
                     <div class="col-6 col-md-6">
                         {% bootstrap_button "Enviar" size="sm" %}
-                        <a href="{% url 'medicoes:relatorio'%}?tipo_medicao={{ request.GET.tipo_medicao }}&mes={{ request.GET.mes }}"
-                           class="btn btn-primary btn-sm"><i class="bi bi-download" ></i> Gerar Relatório de Medições</a>
                     </div>
                 </div>
             </form>
         </div>
     </div>
-    <div class="row">
+    <div class="row bg p-3 m-3">
         <div class="col-12">
             <table id="medicoes" class="table table-striped">
                 <thead>
@@ -52,8 +52,8 @@
                     <td>{{ o.valor_glicose }}</td>
                     <td>{{ o.get_tipo_medicao_display }}</td>
                     <td>{{ o.data_medicao }}</td>
-                    <td><a href="{% url "medicoes:atualiza" pk=o.id %}" class="btn btn-sm btn-primary "><i class="bi bi-pencil-square"></i></a> |
-                        <a href="{% url "medicoes:deleta" pk=o.id %}" class="btn btn-sm btn-danger "><i class="bi bi-trash3"></i></a>
+                    <td><a href="{% url 'medicoes:atualiza' pk=o.id %}" class="btn btn-sm btn-primary "><i class="bi bi-pencil-square"></i></a> |
+                        <a href="{% url 'medicoes:deleta' pk=o.id %}" class="btn btn-sm btn-danger "><i class="bi bi-trash3"></i></a>
                     </td>
                 </tr>
                 {% endfor %}

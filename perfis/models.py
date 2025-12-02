@@ -27,6 +27,7 @@ class Perfil(models.Model):
     alergias = models.TextField("Alergias", blank=True, null=True)
     outras_condicoes = models.TextField(blank=True)
     primeiro_login_completo = models.BooleanField(default=False)
+    peso_desejado = models.FloatField("Peso Desejado", help_text="Peso desejado para alcançar", blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True, blank=True, null=True)
 
 
@@ -35,6 +36,7 @@ class Perfil(models.Model):
             self.nome_completo,
             self.data_nascimento,
             self.telefone,
+            self.peso_desejado,
             self.sexo,
             self.altura,
             self.tipo_sanguineo,

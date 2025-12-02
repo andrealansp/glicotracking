@@ -8,6 +8,7 @@
   --glico-danger: #C1121F;
   --glico-text: #3E4C59;
   --glico-light-bg: #f8f8f8;
+  --glico-light-bg2: #eff1f3;
 }
 
 /* Sobrescrever Bootstrap */
@@ -29,153 +30,27 @@ small { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.4px; }
 .glucose-value { font-family: 'Inter', monospace; font-weight: 600; font-size: 1.25rem; }
 
 body {
-	background-color: #FFF !important;
+	background-color: var(--glico-light-bg2);
 	font-size: 1rem;
 }
 
-.parent {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(4, 1fr) 50px;
-  grid-column-gap: 5px;
-  grid-row-gap: 10px;
-  height: 100vh;
+.navbar-bg-custon{
+    background-color: var(--glico-light-bg);
+}
+footer{
+font-size: small;
 }
 
-.div1 {
-  grid-area: 1 / 1 / 6 / 2;
+.card-body.bg{
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
 
-.div2 {
-  grid-area: 1 / 2 / 5 / 6;
-  font-size: small;
-  text-align: left;
-  overflow-y: scroll;
+.row.bg{
+    background-color: white;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
 
-.div3 {
-  grid-area: 5 / 2 / 6 / 6;
-  font-size: small;
-  text-align: center;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;  /* Centraliza conteúdo verticalmente */
-}
 
-.div2 h1{
-color:#829f89;
-}
-
-.div1 a{
-    color: var(--glico-text);
-}
-.div1 i{
-    color: var(--glico-text);
-}
-
-.custon-bg{
-background-color:var(--glico-light-bg);
-}
-
-.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-    color: white;
-    background-color: var(--glico-primary);
-}
-.nav-link.active i{
-color: white;
-}
-/* Nav expandida (padrão) */
-.div1 {
-    grid-area: 1 / 1 / 6 / 2;
-    transition: all 0.3s ease-in-out;
-    width: auto;
-    min-width: 250px;
-}
-
-/* Nav recolhida */
-.div1.recolhida {
-    grid-area: 1 / 1 / 6 / 1;
-    min-width: 80px;
-    width: 80px;
-}
-
-.div1.recolhida .d-flex img {
-    width: 50px !important;
-    height: auto;
-}
-
-.div1.recolhida hr {
-    display: none;
-}
-
-/* Esconde logo e texto do logo */
-.div1.recolhida > a {
-    display: none;
-}
-
-/* Estilo dos links recolhidos - mostra só ícone */
-.div1.recolhida .nav-link {
-    display: flex !important;
-    justify-content: center;
-    align-items: center;
-    padding: 0.75rem 0.5rem !important;
-    position: relative;
-    font-size: 0;
-}
-
-.div1.recolhida .nav-link i {
-    font-size: 1.5rem;
-    margin-right: 0 !important;
-    margin-bottom: 0 !important;
-}
-
-/* Tooltip ao passar mouse */
-.div1.recolhida .nav-link::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    left: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    white-space: nowrap;
-    margin-left: 10px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-    font-size: 0.85rem;
-    z-index: 1000;
-}
-
-.div1.recolhida .nav-link:hover::after {
-    opacity: 1;
-}
-
-/* Botão de logout recolhido */
-.div1.recolhida .nav-link.custon {
-    font-size: 0;
-}
-
-.div1.recolhida .nav-link.custon i {
-    font-size: 1.5rem;
-}
-
-/* Ajusta grid quando nav recolhe */
-.parent.nav-collapsed {
-    grid-template-columns: 80px repeat(4, 1fr);
-}
-
-.parent.nav-collapsed .div2,
-.parent.nav-collapsed .div3 {
-    grid-column: 2 / 6;
-}
-
-.btn-size-custon{
-position: absolute;
-top: 10px;
-right: 10px;
-z-index: 10;
-height:50px;
-width:50px;
+.bottom-border-menu{
+    border-bottom: 3px gray solid;
 }

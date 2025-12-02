@@ -8,34 +8,67 @@
 
 {% endblock %}
 {% block content %}
-<div class="row justify-content-around my-3">
-    <div class="col-6 overflow-auto">
-        <div class="card">
-            <div class="card-body" style="overflow-x:scroll;">
-                <canvas id="graficoGlicoseDiaria"></canvas>
+
+
+<!--Faixa inicial do dashboard-->
+<div class="row m-3">
+    <div class="col-3">
+        <div class="card ">
+            <div class="card-body bg">
+                <h4>Última Medição</h4>
+                <span>{{ultima_medicao}}</span>
             </div>
         </div>
     </div>
-    <div class="col-6 overflow-auto">
-        <div class="card">
-            <div class="card-body">
-                <canvas id="graficoGlicoseMensal"></canvas>
+    <div class="col-3">
+        <div class="card ">
+            <div class="card-body bg">
+                <h4>Tempo no Alvo</h4>
+                {{tir_percent}} %
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card ">
+            <div class="card-body bg">
+                <h4>Glicada Estimada</h4>
+                <span>{{glicada_estimada|floatformat:2 }} %</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card ">
+            <div class="card-body bg">
+                <h4>Peso Desejado</h4>
+                <span>{{peso_ideal}} Kg</span>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row justify-content-around my-3">
+
+<!-- Gráfico de Glicose -->
+<div class="row justify-content-around m-3">
+    <div class="col-12 overflow-auto">
+        <div class="card ">
+            <div class="card-body bg ">
+                <canvas id="glicoseChart" ></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-around m-3">
     <div class="col-6 ">
         <div class="card">
-            <div class="card-body">
+            <div class="card-body bg">
                 <canvas id="graficoPesoImc"></canvas>
             </div>
         </div>
     </div>
     <div class="col-6">
         <div class="card">
-            <div class="card-body">
+            <div class="card-body bg">
                 <canvas id="graficoBiotipo"></canvas>
             </div>
         </div>
@@ -45,168 +78,114 @@
 <script>
     Chart.register(ChartDataLabels);
 
-    const glicoseDiariaData = JSON.parse('{{ glicose_diaria|escapejs }}');
-    const glicoseMensalData = JSON.parse('{{ glicose_mensal|escapejs }}');
+    const legenda = JSON.parse('{{ dados_grafico.legendas|safe }}');
+    const dados = JSON.parse('{{ dados_grafico.dados|safe }}');
+    const tipo = JSON.parse('{{ dados_grafico.tipo|safe }}');
     const historicoPesoImcData = JSON.parse('{{ historico_peso_imc|escapejs }}');
     const historicoBiotipoData = JSON.parse('{{ historico_biotipo|escapejs }}');
 
-    // --- Gráfico de Média Diária de Glicose ---
-    const ctxGlicoseDiaria = document.getElementById('graficoGlicoseDiaria').getContext('2d');
-    const graficoGlicoseDiaria = new Chart(ctxGlicoseDiaria, {
-        type: 'line',
-        data: {
-            labels: glicoseDiariaData.map(item => new Date(item.data).toLocaleDateString()),
-            datasets: [{
-                label: 'Média Diária de Glicose (mg/dL)',
-                data: glicoseDiariaData.map(item => item.media),
-                backgroundColor: 'rgba(71,74,81,1)',
-                borderColor: 'rgba(0, 0, 0, 1)',
-                borderWidth: 1,
-                fill: false
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    min: 50,
-                    max: 280,
-                    title: {
-                        display: true,
-                        text: 'Glicose (mg/dL)'
-                    }
-                },
-            },
-            plugins: {
-                datalabels: {
-                    align: 'end',
-                    anchor: 'end',
-                    backgroundColor: function (context) {
-                        return context.dataset.backgroundColor;
-                    },
-                    borderColor: 'white',
-                    borderRadius: 5,
-                    borderWidth: 1,
-                    color: 'white',
-                    font: {
-                        weight: 'bold'
-                    },
-                    formatter: function (value, context) {
-                        return value.toFixed(2);
-                    },
-                    padding: 6,
-                    offset: 8
-                },
-                title: {
-                    display: true,
-                    text: 'Média Diária de Glicose no Mês'
-                }
+    <!-- Gráfico de Glicose    -->
+    // 1. Definimos o Plugin customizado para as linhas horizontais
+const horizontalLinesPlugin = {
+    id: 'horizontalLines',
+    afterDatasetsDraw(chart, args, options) {
+        const { ctx, scales: { x, y } } = chart;
+
+        // Função auxiliar para desenhar a linha
+        function drawLine(value, color, text) {
+            // Verifica se o valor está dentro da área visível do gráfico
+            if (value < y.min || value > y.max) return;
+
+            const yPos = y.getPixelForValue(value);
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = color;
+            // Cria um efeito tracejado (opcional, fica mais elegante)
+            ctx.setLineDash([5, 5]);
+            ctx.moveTo(x.left, yPos);
+            ctx.lineTo(x.right, yPos);
+            ctx.stroke();
+
+            if (text) {
+                ctx.fillStyle = color;
+                ctx.font = 'bold 12px Arial';
+                ctx.textAlign = 'right';
+                ctx.fillText(text, x.right - 10, yPos - 10);
             }
-        },
-        plugins: [{
-            afterDatasetsDraw(chart) {
-                const ctx = chart.ctx;
-                const yScale = chart.scales.y;
-                const xScale = chart.scales.x;
+            ctx.restore();
+        }
 
-                function drawHorizontalLine(value, color, label) {
-                    const y = yScale.getPixelForValue(value);
+        // Desenhando as linhas
+        drawLine(180, 'rgba(220, 53, 69, 0.5)', 'Muito Alta');      // Vermelho
+        drawLine(160, 'rgba(253, 126, 20, 0.5)', 'Alta');            // Laranja
+        drawLine(100, 'rgba(32, 201, 151, 0.5)', 'Normal Jejum');    // Verde Água
+        drawLine(70,  'rgba(0, 123, 255, 0.5)', 'Hipoglicemia');     // Azul
+    }
+};
 
-                    ctx.save();
-                    ctx.strokeStyle = color;
-                    ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    ctx.moveTo(xScale.left, y);
-                    ctx.lineTo(xScale.right, y);
-                    ctx.stroke();
+// 2. Configuração do Gráfico
+const ctxGlicose = document.getElementById('glicoseChart').getContext('2d');
 
-                    if (label) {
-                        ctx.fillStyle = color;
-                        ctx.font = 'bold 12px Arial';
-                        ctx.textAlign = 'right';
-                        ctx.fillText(label, xScale.right - 10, y - 10);
-                    }
-                    ctx.restore();
-                }
-
-                drawHorizontalLine(180, '#dc354566', 'Muito Alta');
-                drawHorizontalLine(160, '#fd7e1466', 'Alta');
-                drawHorizontalLine(100, '#20c99766', 'Normal em Jejum');
-                drawHorizontalLine(70, '#007bff66', 'Hipoglicemia');
-            }
+new Chart(ctxGlicose, {
+    type: 'line',
+    data: {
+        labels: legenda, // Suas variáveis
+        datasets: [{
+            label: 'Glicose (Últimos 30 dias)',
+            data: dados, // Suas variáveis
+            borderColor: 'rgb(127, 255, 0)',
+            backgroundColor: 'rgb(127, 255, 0)', // Necessário para o datalabels usar a cor
+            tension: 0.3,
+            pointRadius: 4, // Tamanho da bolinha
         }]
-    });
-
-    // --- Gráfico de Média Mensal de Glicose ---
-    const ctxGlicoseMensal = document.getElementById('graficoGlicoseMensal').getContext('2d');
-    const graficoGlicoseMensal = new Chart(ctxGlicoseMensal, {
-        type: 'line',
-        data: {
-            labels: glicoseMensalData.map(item => new Date(item.mes).toLocaleDateString('pt-BR', {
-                month: 'long',
-                year: 'numeric'
-            })),
-            datasets: [{
-                label: 'Média Mensal de Glicose (mg/dL)',
-                data: glicoseMensalData.map(item => item.media),
-                backgroundColor: 'rgba(75, 192, 192, 1)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 2,
-                fill: false,
-                datalabels: {
-                    align: "end",
-                    padding: 6,
-                    borderRadius: 10,
-                    textAlign: "center",
-                    anchor: "middle",
-                    formatter: function (value) {
-                        return value.toFixed(2) + ' mg/dL';
-                    }
-                }
-            }]
+    },
+    // 3. REGISTRO DOS PLUGINS (Aqui é a mudança principal)
+    plugins: [ChartDataLabels, horizontalLinesPlugin],
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 3,
+        scales: {
+            y: {
+                // Sugestão: Definir um min/max sugerido para as linhas sempre aparecerem
+                suggestedMin: 50,
+                suggestedMax: 200
+            }
         },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: false,
-                    title: {
-                        display: true,
-                        text: 'Valor da Glicose (mg/dL)'
-                    }
+        plugins: {
+            // Configuração do Plugin DataLabels
+            datalabels: {
+                align: 'end',
+                anchor: 'end',
+                backgroundColor: function(context) {
+                    return context.dataset.borderColor;
                 },
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Mês'
-                    }
+                borderRadius: 4,
+                color: 'black',
+                font: {
+                    weight: 'bold',
+                    size: 11
+                },
+                padding: 4,
+                offset: 4,
+                formatter: function(value) {
+                    return Math.round(value); // Arredonda o valor
                 }
             },
-            plugins: {
-                datalabels: {
-                    align: 'end',
-                    anchor: 'end',
-                    backgroundColor: function (context) {
-                        return context.dataset.backgroundColor;
-                    },
-                    borderColor: 'white',
-                    borderRadius: 10,
-                    borderWidth: 2,
-                    color: 'white',
-                    font: {
-                        weight: 'bold'
-                    },
-                    formatter: function (value, context) {
-                        return value + ' mg/dL';
-                    },
-                    padding: 6,
-                    offset: 8
-                },
-                title: {
-                    display: true,
-                    text: 'Média Mensal de Glicose'
-                }
+            title: {
+                display: true,
+                text: 'Monitoramento de Glicose',
+                font: { size: 16 }
+            },
+            legend: {
+                display: true // Mostra a legenda do dataset
             }
         }
-    });
+    }
+});
+
     <!-- Gráfico de barras agrupadas com peso e IMC -->
     const ctxPesoImc = document.getElementById('graficoPesoImc').getContext('2d');
     const graficoPesoImc = new Chart(ctxPesoImc, {
@@ -216,14 +195,14 @@
             datasets: [{
                 label: 'Peso (kg)',
                 data: historicoPesoImcData.map(item => parseFloat(item.peso_kg)),
-                backgroundColor: 'rgba(75, 192, 192, 0.4)',
+                backgroundColor: 'rgba(75, 192, 192, 0.8)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
                 yAxisID: 'y-peso'
             }, {
                 label: 'IMC',
                 data: historicoPesoImcData.map(item => parseFloat(item.imc)),
-                backgroundColor: 'rgba(255, 206, 86, 0.4)',
+                backgroundColor: 'rgba(255, 206, 86, 0.8)',
                 borderColor: 'rgba(255, 206, 86, 1)',
                 borderWidth: 1,
                 datalabels: {
@@ -285,7 +264,8 @@
                     display: true,
                     text: 'Peso e IMC'
                 }
-            }
+            },
+
         }
     });
 

@@ -12,18 +12,18 @@
 {% block content %}
 
 <!--Gráfico com as medidas de glicose-->
-<div class="row mt-5">
-    <div class="col-12 mb-5">
-        <h1> Relatório de Medições </h1>
-    </div>
+
+<h1 class="m-4 text-center"> Relatório de Medições </h1>
+<div class="row p-3 bg m-3">
     <div class="col-12">
         <div class="btn-group" role="group" aria-label="BAR">
-            <a class="btn btn-sm btn-warning" href="{% url 'core:dashboard' %}" type="button"><i class="bi bi-arrow-left-circle"></i> Retornar</a>
+            <a class="btn btn-sm btn-warning" href="{% url 'core:dashboard' %}" type="button"><i
+                    class="bi bi-arrow-left-circle"></i> Retornar</a>
         </div>
     </div>
 </div>
 
-<div class="row my-4">
+<div class="row p-3 bg m-3">
     <div class="col-12">
         <div class="card">
             <div class="card-body" style="overflow-x:scroll;">
@@ -33,7 +33,7 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row p-3 bg m-3">
     <div class="col">
         <table class="table table-sm table-bordered">
             <thead>
@@ -60,7 +60,6 @@
 </div>
 
 
-
 <script>
     Chart.register(ChartDataLabels);
     const glicoseData = JSON.parse('{{ dados_json|escapejs }}');
@@ -78,7 +77,11 @@
                 backgroundColor: 'rgba(192,192,192,0.8)',
                 borderColor: 'white',
                 borderWidth: 1,
-                borderRadius: 5
+                borderRadius: 5,
+                barPercentage: 0.8,
+                categoryPercentage: 0.9,
+                maxBarThickness: 40,
+                minBarLength: 5,
             }]
         },
         options: {

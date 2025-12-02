@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 from django.views.generic import TemplateView
-from django.db.models import Avg
+from django.db.models import Avg, Min, Max
 from django.db.models.functions import TruncDay, TruncMonth, TruncYear, TruncDate
 from medicoes.models import Medicao
 from perfis.models import HistoricoPesoImc, Perfil, HistoricoBioTipo
@@ -19,26 +19,11 @@ class RelatorioMedicoesView(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
+        hoje = datetime.now()
+        inicio_mes = hoje - timedelta(days=30)
+        data_corte_glicada = hoje - timedelta(days=90)
 
         perfil = self.request.user.perfil  # Assumindo que cada usuário tem um perfil relacionado
-
-        # --- Dados para o gráfico de glicose ---
-        glicose_diaria = (Medicao.objects.filter(perfil=perfil,data_medicao__month=datetime.today().month).
-                          annotate(data=TruncDate('data_medicao')).values('data').
-                          annotate(media=Avg('valor_glicose')).order_by('data'))
-
-        
-
-        glicose_diaria_lista = [{'data': item['data'].isoformat(), 'media': item['media']} for item in glicose_diaria]
-
-        glicose_mensal = (Medicao.objects.filter(perfil=perfil).
-                          annotate(mes=TruncMonth('data_medicao')).values('mes').
-                          annotate(media=Avg('valor_glicose')).order_by('mes'))
-
-        glicose_mensal_lista = [
-            {'mes': item['mes'].isoformat(),
-             'media': item['media']} for item in
-            glicose_mensal]
 
         # --- Dados para o gráfico de peso e IMC ---
         historico_peso_imc = HistoricoPesoImc.objects.filter(perfil=perfil).order_by('data_registro')
@@ -58,9 +43,38 @@ class RelatorioMedicoesView(TemplateView):
             "perna": item.perna,
         } for item in historico_biotipo]
 
-        context['glicose_diaria'] = json.dumps(glicose_diaria_lista, cls=DjangoJSONEncoder)
-        context['glicose_mensal'] = json.dumps(glicose_mensal_lista, cls=DjangoJSONEncoder)
+
+        medicoes = Medicao.objects.filter(perfil=perfil, data_medicao__gte=inicio_mes)
+        medicoes_glicada = Medicao.objects.filter(perfil=perfil, data_medicao__gte=data_corte_glicada)
+
+        # 1. Time in Range (TIR)
+        total_medicoes = medicoes.count()
+        no_alvo = medicoes.filter(valor_glicose__gte=70, valor_glicose__lte=180).count()
+        tir_percent = (no_alvo / total_medicoes * 100) if total_medicoes > 0 else 0
+
+        # 2. Glicada Estimada (Fórmula ADAG)
+        media_glicose = medicoes_glicada.aggregate(Avg('valor_glicose'))['valor_glicose__avg'] or 0
+        glicada_estimada = (media_glicose + 46.7) / 28.7
+
+        # 3. Dados para o Gráfico Principal (Min/Max/Media por dia)
+        # Usar TruncDay para agrupar por dia
+
+        labels = [d.data_medicao.strftime('%d/%m') for d in medicoes]
+        valor_glicose = [d.valor_glicose for d in medicoes]
+        tipo_medicao = [d.tipo_medicao for d in medicoes]
+
+
         context['historico_peso_imc'] = json.dumps(historico_peso_imc_lista, cls=DjangoJSONEncoder)
         context['historico_biotipo'] = json.dumps(historico_biotipo_lista, cls=DjangoJSONEncoder)
+        context["tir_percent"] = json.dumps(tir_percent, cls=DjangoJSONEncoder)
+        context['glicada_estimada'] = json.dumps(glicada_estimada, cls=DjangoJSONEncoder)
+        context['peso_ideal'] = perfil.peso_desejado
+        context['dados_grafico'] = {
+            'legendas': json.dumps(labels),
+            'dados': json.dumps(valor_glicose),
+            'tipo': json.dumps(tipo_medicao),
+        }
+        context['ultima_medicao'] = medicoes.last()
+
 
         return context

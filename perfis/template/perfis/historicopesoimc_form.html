@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 {% load django_bootstrap5 %}
 {% block content %}
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12 ">
-                <h1>Registrar Peso</h1>
-                <a class="btn btn-sm btn-warning" href="{% url "perfis:peso_lista" %}" type="button"><i class="bi bi-arrow-left-circle"></i> Retornar</a>
-            </div>
+<div class="container-fluid">
+    <h1 class="m-4 text-center">Registrar Peso</h1>
+    <div class="row p-3 bg m-3">
+        <div class="col-12 ">
+            <a class="btn btn-sm btn-warning" href="{% url 'perfis:peso_lista' %}" type="button"><i
+                class="bi bi-arrow-left-circle"></i> Retornar</a>
         </div>
+    </div>
+    <div class="row p-3 bg m-3">
         <div class="col-12">
-
             <form method="post" class="form mt-3">
                 {% csrf_token %}
 
@@ -20,4 +21,5 @@
             </form>
         </div>
     </div>
+</div>
 {% endblock %}
