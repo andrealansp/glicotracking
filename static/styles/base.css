@@ -45,12 +45,46 @@ font-size: small;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
 
-.row.bg{
+.bg{
     background-color: white;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
-
+.b-enfase{
+    border-bottom: solid 3px var(--glico-accent);
+}
 
 .bottom-border-menu{
-    border-bottom: 3px gray solid;
+    border-bottom: 3px solid var(--glico-primary);
+}
+
+.navbar-nav .nav-link {
+  border-radius: 8px;
+  margin: 0 0.25rem;
+}
+
+.navbar-nav .nav-link:hover {
+  background-color: var(--glico-accent);
+  color: white !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(82, 182, 204, 0.3);
+}
+
+.navbar-nav .nav-link.active {
+  background-color: var(--glico-primary);
+  color: white !important;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(45, 106, 79, 0.2);
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background-color: var(--glico-accent);
+  color: white;
+}
+.chart-wrapper {
+    overflow-x: auto;  /* Scroll horizontal para muitos pontos */
+    max-width: 100%;
+}
+.graficos{
+height: 40vh;
+width: auto;
 }

@@ -1,16 +1,17 @@
 import json
 
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-import medicoes
 from medicoes.forms import MedicaoForm,MedicaoFilterForm
 from medicoes.models import Medicao
 from perfis.models import Perfil
+from medicoes.serializers import MedicaoSerializer
+from rest_framework import generics
 
 
-# Create your views here.
+
 
 class MedicoesListView(LoginRequiredMixin, ListView):
     template_name_suffix = "_listar"
@@ -22,7 +23,7 @@ class MedicoesListView(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self):
-        instancia = super().get_queryset().all()
+        instancia = super().get_queryset().filter(perfil=self.request.user.perfil)
         tipo_medicao_data = self.request.GET.get('tipo_medicao')
         mes = self.request.GET.get('mes')
 
@@ -93,3 +94,15 @@ class RelatoriosListView(LoginRequiredMixin, ListView):
         context["dados_json"] = json.dumps(dados_lista)
 
         return context
+
+class MedicoesCreateListView(generics.ListCreateAPIView):
+    queryset = Medicao.objects.all()
+    serializer_class = MedicaoSerializer
+
+    def get_queryset(self):
+        instancia = self.queryset.filter(perfil=self.request.user.perfil)
+        return instancia
+
+class MedicoesRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Medicao.objects.all()
+    serializer_class = MedicaoSerializer

@@ -27,7 +27,7 @@ class Medicao(models.Model):
     class Meta:
         app_label = 'medicoes'
         verbose_name_plural = 'Medições'
-        ordering = ['data_medicao']
+        ordering = ['-data_medicao']
 
 
 

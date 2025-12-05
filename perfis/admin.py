@@ -23,5 +23,5 @@ class PerfilAdmin(admin.ModelAdmin):
 
 @admin.register(HistoricoPesoImc)
 class PerfilHistoricoPesoImc(admin.ModelAdmin):
-    list_display = ('perfil', 'peso_kg', 'imc')
-    fields = ('perfil','peso_kg')
+    list_display = ('perfil', 'peso', 'imc')
+    fields = ('perfil','peso')

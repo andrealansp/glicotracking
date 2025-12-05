@@ -15,7 +15,7 @@ class Perfil(models.Model):
     nome_completo = models.CharField(max_length=100)
     telefone = models.CharField(max_length=11)
     data_nascimento = models.DateField()
-    sexo = models.CharField(max_length=1, choices=[('M', 'Masculino'), ('F', 'Femenino')])
+    sexo = models.CharField(max_length=1, choices=[('M', 'Masculino'), ('F', 'Feminino')])
     altura = models.FloatField("Altura", help_text="Altura em CM", blank=True, null=True)
     tipo_sanguineo = models.CharField("Tipo Sanguíneo", max_length=3, blank=True, null=True)
     tipo_diabetes = models.CharField("Tipo Diabetes", max_length=10, choices=[('tipo1', 'Tipo 1'), ('tipo2', "Tipo 2")],
@@ -45,8 +45,6 @@ class Perfil(models.Model):
             self.insulina,
         ])
 
-
-
     def save(self, *args, **kwargs):
         slug = slugify(self.nome_completo)
         self.slug = slug
@@ -65,21 +63,39 @@ class Perfil(models.Model):
 class HistoricoPesoImc(models.Model):
     perfil = models.ForeignKey(Perfil,related_name='perfilpeso', on_delete=models.CASCADE)
     data_registro = models.DateField(auto_now_add=True)
-    peso_kg = models.DecimalField("Peso",help_text="Peso em Kg",max_digits=5, decimal_places=2, null=False, blank=False)
+    peso = models.DecimalField("Peso",help_text="Peso em Kg",max_digits=5, decimal_places=2, null=False, blank=False)
     imc = models.DecimalField(max_digits=5, decimal_places=2, editable=False)
+    grau_obesidade = models.CharField("Grau de Obesidade", max_length=50, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         altura_m = self.perfil.altura / 100
-        self.imc = round(float(self.peso_kg) / (altura_m ** 2), 2)
+        self.imc = round(float(self.peso) / (altura_m ** 2), 2)
+        self.grau_obesidade = self.get_grau_obesidade(self.imc)
         super().save(*args, **kwargs)
 
+    @staticmethod
+    def get_grau_obesidade(imc):
+        if imc < 18.5:
+            return 'Abaixo do peso'
+        elif 18.5 <= imc < 24.9:
+            return 'Peso normal'
+        elif 25.9 <= imc < 29.9:
+            return 'Sobrepeso'
+        elif 30 <= imc < 34.9:
+            return 'Obesidade grau I'
+        elif 35 <= imc < 39.9:
+            return 'Obesidade grau II'
+        elif imc >= 40.0:
+            return 'Obesidade grau III'
+        return None
+
     class Meta:
-        ordering = ["-peso_kg"]
+        ordering = ["-peso"]
         verbose_name = "Historico Peso Imc"
         verbose_name_plural = "Historicos Peso Imc"
 
     def __str__(self):
-        return f"{self.peso_kg} - {self.data_registro}"
+        return f"{self.peso} - {self.data_registro}"
 
 class HistoricoBioTipo(models.Model):
     perfil = models.ForeignKey(Perfil,related_name='perfilbiotipo', on_delete=models.CASCADE)

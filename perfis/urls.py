@@ -6,6 +6,7 @@ app_name = "perfis"
 
 urlpatterns = [
     path("perfil/<slug>", views.PerfilDetailView.as_view(), name="perfil"),
+    path("perfil/<pk>/delete", views.PerfilDeleteView.as_view(), name="delete"),
     path('registra', views.PerfilRegisterView.as_view(), name="registra"),
     path('<int:user_id>/atualiza', views.PerfilUpdateView.as_view(), name="atualiza"),
     path('peso/registra', views.PerfilPesoImcCreateView.as_view(), name="peso_registro"),

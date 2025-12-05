@@ -5,7 +5,6 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
 {% endblock %}
 {% block content %}
-    <h1 class="m-2 text-center">Acompanhamento do Peso Corporal do paciente</h1>
     <div class="container-fluid mt-3">
         <div class="row p-3 bg m-3">
             <div class="col">
@@ -15,13 +14,14 @@
                 </div>
             </div>
         </div>
-        <div class="row bg m-3 p-3">
+        <div class="row bg m-3 p-3 overflow-auto">
             <div class="col">
                 <table class="table table-sm table-striped" id="tblpeso">
                     <thead>
                     <tr>
                         <th>Peso</th>
                         <th>IMC</th>
+                        <th>Grau de Obesidade</th>
                         <th>Data da Medição</th>
                         <th>Ações</th>
                     </tr>
@@ -29,11 +29,13 @@
                     <tbody>
                     {% for o in object_list %}
                         <tr>
-                            <td>{{ o.peso_kg }}</td>
+                            <td>{{ o.peso }}</td>
                             <td>{{ o.imc }}</td>
+                            <td>{{ o.grau_obesidade}}</td>
                             <td>{{ o.data_registro }}</td>
-                            <td><a href="{% url "perfis:peso_atualiza" pk=o.id %}" class="btn btn-sm btn-primary"><i class="bi bi-pencil-square"></i></a> |
-                                <a href="{% url "perfis:peso_delete" pk=o.id %}" class="btn btn-sm btn-danger "><i class="bi bi-trash3"></i></a>
+
+                            <td><a href="{% url 'perfis:peso_atualiza' pk=o.id %}" class="btn btn-sm btn-primary"><i class="bi bi-pencil-square"></i></a> |
+                                <a href="{% url 'perfis:peso_delete' pk=o.id %}" class="btn btn-sm btn-danger "><i class="bi bi-trash3"></i></a>
                             </td>
                         </tr>
                     {% endfor %}

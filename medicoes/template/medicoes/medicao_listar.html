@@ -5,11 +5,10 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
 {% endblock %}
 {% block content %}
-<h1 class="m-2 text-center">Acompanhamento da Glicose no Sangue do Paciente</h1>
 <div class="container-fluid mt-3">
     <div class="row p-3 bg m-3">
-        <div class="col">
-            <div class="btn-group" role="group" aria-label="Basic example">
+        <div class="col-sm-12 col-12">
+            <div class="d-flex flex-lg-row flex-column gap-1">
                 <a class="btn btn-sm btn-warning" href="{% url 'core:dashboard' %}" type="button"><i class="bi bi-arrow-left-circle"></i> Retornar</a>
                 <a href="{% url 'medicoes:registra' %}" class="btn btn-primary btn-sm"> <i class="bi bi-plus-circle"></i> Registrar Medição</a>
                 <a href="{% url 'medicoes:relatorio'%}?tipo_medicao={{ request.GET.tipo_medicao }}&mes={{ request.GET.mes }}"
@@ -22,13 +21,13 @@
             <form method="get">
                 <div class="row">
                     {% csrf_token %}
-                    <div class="col-3 col-md-3">
+                    <div class="col-12 col-sm-12 col-md-3 col-lg-3" >
                         {% bootstrap_field form.tipo_medicao show_label='skip' size="sm" %}
                     </div>
-                    <div class="col-3 col-md-3">
+                    <div class="col-12 col-sm-12 col-md-3 col-lg-3">
                         {% bootstrap_field form.mes show_label='skip' size="sm" %}
                     </div>
-                    <div class="col-6 col-md-6">
+                    <div class="col-12 col-sm-12 col-md-6 col-lg-6">
                         {% bootstrap_button "Enviar" size="sm" %}
                     </div>
                 </div>
@@ -36,7 +35,7 @@
         </div>
     </div>
     <div class="row bg p-3 m-3">
-        <div class="col-12">
+        <div class="col-12 overflow-auto">
             <table id="medicoes" class="table table-striped">
                 <thead>
                 <tr>
@@ -51,7 +50,7 @@
                 <tr>
                     <td>{{ o.valor_glicose }}</td>
                     <td>{{ o.get_tipo_medicao_display }}</td>
-                    <td>{{ o.data_medicao }}</td>
+                    <td>{{ o.data_medicao|date:"SHORT_DATETIME_FORMAT"}}</td>
                     <td><a href="{% url 'medicoes:atualiza' pk=o.id %}" class="btn btn-sm btn-primary "><i class="bi bi-pencil-square"></i></a> |
                         <a href="{% url 'medicoes:deleta' pk=o.id %}" class="btn btn-sm btn-danger "><i class="bi bi-trash3"></i></a>
                     </td>

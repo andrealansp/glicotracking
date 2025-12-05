@@ -14,7 +14,7 @@ from perfis.models import Perfil, HistoricoPesoImc, HistoricoBioTipo
 class CustomLoginView(LoginView):
     def get_success_url(self):
         perfil = self.request.user.perfil
-        if not perfil.perfil_completo():  # método que verifica se os campos obrigatórios estão preenchidos
+        if not perfil.perfil_completo():
             return reverse('perfis:atualiza', kwargs={"user_id":perfil.user.id})
         return super().get_success_url()
 
@@ -37,7 +37,7 @@ class PerfilRegisterView(CreateView):
         return HttpResponseRedirect(reverse('login'))
 
     def form_invalid(self, form):
-        print(form.cleaned_data)
+        return super().form_invalid(form)
 
 
 class PerfilDetailView(LoginRequiredMixin, DetailView):
@@ -80,6 +80,11 @@ class PerfilUpdateView(LoginRequiredMixin, UpdateView):
         slug = form.cleaned_data['slug']
         return HttpResponseRedirect(reverse_lazy('perfis:perfil', kwargs={'slug': slug}))
 
+class PerfilDeleteView(LoginRequiredMixin, DeleteView):
+    model = Perfil
+    template_name_suffix = '_confirm_delete'
+    success_url = reverse_lazy("login")
+
 
 class PerfilPesoImcCreateView(LoginRequiredMixin, CreateView):
     model = HistoricoPesoImc
@@ -97,6 +102,10 @@ class PerfilPersoImcListView(LoginRequiredMixin, ListView):
     model = HistoricoPesoImc
     template_name_suffix = '_listar'
     context_object_name = "peso"
+
+    def get_queryset(self):
+        instancia = super().get_queryset().filter(perfil=self.request.user.perfil)
+        return instancia
 
 
 class PerfilPesoImcUpdateView(LoginRequiredMixin, UpdateView):
@@ -121,6 +130,10 @@ class PerfilBiotipoListView(LoginRequiredMixin, ListView):
     model = HistoricoBioTipo
     template_name_suffix = '_listar'
     context_object_name = "biotipo"
+
+    def get_queryset(self):
+        instancia = super().get_queryset().filter(perfil=self.request.user.perfil)
+        return instancia
 
 
 class PerfilBiotipoUpdateView(LoginRequiredMixin, UpdateView):
