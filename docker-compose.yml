@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   glicoctk_bd:
-    image: postgres:15
+    image: postgres:latest
     restart: always
     environment:
         POSTGRES_DB: ${DB_NAME}
@@ -16,12 +16,15 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+
   glicotck:
-    image: glicotracking-glicotracking:latest
+    image: glicotrackingstack:latest
     command: gunicorn app.wsgi:application --bind 0.0.0.0:8000
     environment:
       - DJANGO_SETTINGS_MODULE=app.settings
       - SECRET_KEY=${SECRET_KEY}
+      # - DATABASE_URL=${DATABASE_URL}
+      # - ALLOWED_HOSTS=glicotracking.alvesdevpy.com.br
     volumes:
       - glico_data:/glicotracking
       - static_volume:/glicotracking/static
@@ -53,7 +56,6 @@ volumes:
   glico_data:
   static_volume:
   media_volume:
-  pgdata:
 
 networks:
   alvesdevpynet:
