@@ -12,8 +12,6 @@
 {% block content %}
 
 <!--Gráfico com as medidas de glicose-->
-
-<h1 class="m-4 text-center"> Relatório de Medições </h1>
 <div class="row p-3 bg m-3">
     <div class="col-12">
         <div class="btn-group" role="group" aria-label="BAR">
@@ -26,14 +24,16 @@
 <div class="row p-3 bg m-3">
     <div class="col-12">
         <div class="card">
-            <div class="card-body" style="overflow-x:scroll;">
-                <canvas id="graficoGlicose"></canvas>
+            <div class="card-body chart-wrapper">
+                <div id="areadografico">
+                    <canvas id="glicoseChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row p-3 bg m-3">
+<div class="row p-3 bg m-3 overflow-auto">
     <div class="col">
         <table class="table table-sm table-bordered">
             <thead>
@@ -49,7 +49,7 @@
             <tr>
                 <td>{{ o.valor_glicose }}</td>
                 <td>{{ o.get_tipo_medicao_display }}</td>
-                <td>{{ o.data_medicao }}</td>
+                <td>{{ o.data_medicao|date:"SHORT_DATETIME_FORMAT" }}</td>
                 <td>{{o.observacoes}}</td>
             </tr>
             {% endfor %}
@@ -64,34 +64,41 @@
     Chart.register(ChartDataLabels);
     const glicoseData = JSON.parse('{{ dados_json|escapejs }}');
 
-    // --- Gráfico de Barras de Glicose ---
-    const ctxGlicose = document.getElementById('graficoGlicose').getContext('2d');
+
+    if (glicoseData.length > 30) {
+    grafico = document.getElementById("areadografico");
+     grafico.style.width = "150vw";
+     grafico.style.height = "100vh";
+    }
+    else{
+    grafico = document.getElementById("glicoseChart");
+     grafico.style.width = "100vw";
+     grafico.style.height = "70vh";
+    }
+
+    const ctxGlicose = document.getElementById('glicoseChart').getContext('2d');
     const labels = glicoseData.map(item => new Date(item.data).toLocaleDateString());
-    const graficoGlicose = new Chart(ctxGlicose, {
-        type: 'bar',
+    const glicoseChart = new Chart(ctxGlicose, {
+        type: 'line',
         data: {
-            labels: labels,
+            labels: labels.reverse(),
             datasets: [{
                 label: 'Glicose (mg/dL)',
-                data: glicoseData.map(item => item.valor),
-                backgroundColor: 'rgba(192,192,192,0.8)',
-                borderColor: 'white',
-                borderWidth: 1,
-                borderRadius: 5,
-                barPercentage: 0.8,
-                categoryPercentage: 0.9,
-                maxBarThickness: 40,
-                minBarLength: 5,
+                data: glicoseData.map(item => item.valor).reverse(),
+                borderColor: 'rgb(127, 255, 0)',
+                backgroundColor: 'rgb(127, 255, 0)', // Necessário para o datalabels usar a cor
+                tension: 0.3,
+                pointRadius: 4, // Tamanho da bolinha
             }]
         },
         options: {
             //indexAxis: 'y',
             responsive: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
             scales: {
                 y: {
                     beginAtZero: true,
-                    max: 280,
+                    grace: 10,
                     title: {
                         display: true,
                         text: 'Glicose (mg/dL)'
@@ -106,22 +113,22 @@
             },
             plugins: {
                 datalabels: {
-                    align: 'top',
-                    anchor: 'end',
-                    backgroundColor: 'rgb(75, 192, 192)',
-                    borderColor: 'white',
-                    borderRadius: 5,
-                    borderWidth: 1,
-                    color: 'white',
-                    font: {
-                        weight: 'bold',
-                        size: 11
-                    },
-                    formatter: function (value, context) {
-                        return value.toFixed(2);
-                    },
-                    padding: 6,
-                    offset: 8
+                align: 'end',
+                anchor: 'end',
+                backgroundColor: function(context) {
+                    return context.dataset.borderColor;
+                },
+                borderRadius: 4,
+                color: 'black',
+                font: {
+                    weight: 'bold',
+                    size: 11
+                },
+                padding: 4,
+                offset: 4,
+                formatter: function(value) {
+                    return Math.round(value); // Arredonda o valor
+                },
                 },
                 title: {
                     display: true,

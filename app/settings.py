@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -29,23 +30,23 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ['glicotracking.alvesdevpy.com.br', '127.0.0.1', 'localhost','*']
-CSRF_TRUSTED_ORIGINS = ["https://glicotracking.alvesdevpy.com.br", "http://www.glicotracking.alvesdevpy.com.br"]
-
-# Reconhecer HTTPS por trás do Traefik
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-USE_X_FORWARDED_HOST = True
-
-# Cookies seguros em produção
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-
-# Recomendado
-SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
+# CSRF_TRUSTED_ORIGINS = ["https://glicotracking.alvesdevpy.com.br", "http://www.glicotracking.alvesdevpy.com.br"]
+#
+# # Reconhecer HTTPS por trás do Traefik
+# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# USE_X_FORWARDED_HOST = True
+#
+# # Cookies seguros em produção
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+#
+# # Recomendado
+# SECURE_HSTS_SECONDS = 31536000
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
+# SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+# SECURE_BROWSER_XSS_FILTER = True
+# SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # Application definition
 
@@ -63,6 +64,7 @@ INSTALLED_APPS = [
     'perfis',
     "planos",
     'exames',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

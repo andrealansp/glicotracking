@@ -1,56 +1,59 @@
-{% load static %} {% load django_bootstrap5 %}
-
 <!DOCTYPE html>
+{% load static %} {% load django_bootstrap5 %}
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Login Sugar Check</title>
+    <title>Glico Tracking</title>
     {% bootstrap_css %}
+    <link rel="stylesheet" href="{% static 'styles/base.css' %}">
 </head>
 <body>
 <div class="container-fluid">
     <form method="post" class="form">
+        <!--Logo-->
         <div class="row justify-content-center">
             <div class="col-sm-6 col-lg-2 text-center">
-                <img src={% static '/images/logo.png' %} class="img-fluid"
+                <img src="{% static '/images/logo.png' %}" class="img-fluid"
                      width="300px" alt="Logo sugar check" srcset=""/>
             </div>
         </div>
-        <div class="row justify-content-center">
-            <div class="col-sm-12 col-lg-8">
+        <!--Cabeçalho-->
+        <div class="row justify-content-center ">
+            <div class="col-sm-12 col-lg-8 bg">
                 {% bootstrap_messages %}
                 {% bootstrap_form_errors form %}
                 <input class="btn btn-warning my-3" type="reset" value="Retornar"
                        onClick="history.back()"/>
             </div>
         </div>
-        <div class="row justify-content-center">
-            <div class="col-sm-12 col-lg-8">
+
+        <div class="row justify-content-center my-3">
+            <div class="col-sm-12 col-lg-8 bg p-3">
                 {% csrf_token %}
 
                 <h3>Informações Pessoais</h3>
                 <hr>
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-sm-12 col-lg-4 col-12">
                         {% bootstrap_field form.first_name %}
                     </div>
-                    <div class="col-4">
+                    <div class="col-sm-12 col-lg-4 col-12">
                         {% bootstrap_field form.last_name %}
                     </div>
-                    <div class="col-4">
+                    <div class="col-sm-12 col-lg-4 col-12">
                         {% bootstrap_field form.sexo %}
                     </div>
 
                 </div>
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-12 col-lg-4">
                         {% bootstrap_field form.telefone %}
                     </div>
-                    <div class="col-4">
+                    <div class="col-12 col-lg-4">
                         {% bootstrap_field form.data_nascimento %}
                     </div>
-                    <div class="col-4">
+                    <div class="col-12 col-lg-4">
                         {% bootstrap_field form.email %}
                     </div>
                 </div>
@@ -59,27 +62,22 @@
                 <hr>
 
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-12 col-lg-12">
                         {% bootstrap_field form.username %}
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-12 col-lg-6">
                         {% bootstrap_field form.password1 %}
                     </div>
-                    <div class="col-6">
+                    <div class="col-12 col-lg-6">
                         {% bootstrap_field form.password2 %}
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="row justify-content-center my-5">
-            <div class="col-sm-12 col-lg-8">
                 <button type="submit" class="btn btn-primary">
                     Criar usuário
                 </button>
             </div>
-
         </div>
     </form>
 </div>

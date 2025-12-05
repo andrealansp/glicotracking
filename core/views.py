@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
+from django.utils import timezone
 
 from django.views.generic import TemplateView
 from django.db.models import Avg, Min, Max
@@ -19,7 +20,7 @@ class RelatorioMedicoesView(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        hoje = datetime.now()
+        hoje = timezone.now()
         inicio_mes = hoje - timedelta(days=30)
         data_corte_glicada = hoje - timedelta(days=90)
 
@@ -74,7 +75,7 @@ class RelatorioMedicoesView(TemplateView):
             'dados': json.dumps(valor_glicose),
             'tipo': json.dumps(tipo_medicao),
         }
-        context['ultima_medicao'] = medicoes.last()
+        context['ultima_medicao'] = medicoes.first()
 
 
         return context

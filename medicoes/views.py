@@ -1,14 +1,13 @@
 import json
 
 from django.urls import reverse_lazy
+from django.views import generic
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-import medicoes
 from medicoes.forms import MedicaoForm,MedicaoFilterForm
 from medicoes.models import Medicao
 from perfis.models import Perfil
-
 
 # Create your views here.
 
@@ -93,3 +92,4 @@ class RelatoriosListView(LoginRequiredMixin, ListView):
         context["dados_json"] = json.dumps(dados_lista)
 
         return context
+

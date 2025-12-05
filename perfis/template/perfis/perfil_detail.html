@@ -1,13 +1,12 @@
 {% extends "base.html" %}
 {% load django_bootstrap5 %}
 {% block content %}
-    <h1 xmlns="http://www.w3.org/1999/html">Meu perfil</h1>
     <div class="container-fluid mt-3">
         <div class="row my-3 align-itens-start">
             <div class="col-2">
                 <div class="btn-group" role="group" aria-label="Basic example">
-                    <a class="btn btn-sm btn-warning" href="{% url "core:dashboard" %}" type="button">Retornar</a>
-                    <a href="{% url "perfis:atualiza" user_id=perfil.user_id %}" class="btn btn-primary btn-sm">Editar
+                    <a class="btn btn-sm btn-warning" href="{% url 'core:dashboard' %}" type="button">Retornar</a>
+                    <a href="{% url 'perfis:atualiza' user_id=perfil.user_id %}" class="btn btn-primary btn-sm">Editar
                         Perfil</a>
                 </div>
             </div>

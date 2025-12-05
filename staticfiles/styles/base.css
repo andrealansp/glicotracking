@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --glico-primary: #2D6A4F;
+  --glico-secondary: #1B4965;
+  --glico-accent: #52B6CC;
+  --glico-alert: #F4A460;
+  --glico-danger: #C1121F;
+  --glico-text: #3E4C59;
+  --glico-light-bg: #f8f8f8;
+  --glico-light-bg2: #eff1f3;
+}
+
+/* Sobrescrever Bootstrap */
+.btn-primary { background-color: var(--glico-primary); border-color: var(--glico-primary); }
+.bg-primary { background-color: var(--glico-primary) !important; }
+.text-primary { color: var(--glico-primary) !important; }
+
+/* Tabela com alternância sutil */
+table tbody tr:nth-child(odd) { background-color: var(--glico-light-bg); }
+
+* { font-family: 'Inter', sans-serif; }
+
+h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; line-height: 1.2; }
+h2 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.3px; }
+body { font-size: 1rem; font-weight: 400; line-height: 1.5; color: var(--glico-text); }
+small { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.4px; }
+
+/* Melhorar leitura em valores numéricos */
+.glucose-value { font-family: 'Inter', monospace; font-weight: 600; font-size: 1.25rem; }
+
+body {
+	background-color: var(--glico-light-bg2);
+	font-size: 1rem;
+}
+
+.navbar-bg-custon{
+    background-color: var(--glico-light-bg);
+}
+footer{
+font-size: small;
+}
+
+.card-body.bg{
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.bg{
+    background-color: white;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+.b-enfase{
+    border-bottom: solid 3px var(--glico-primary);
+}
+.b-enfase1{
+    border-bottom: solid 3px var(--glico-secondary);
+}
+.b-enfase2{
+    border-bottom: solid 3px var(--glico-accent);;
+}
+.b-enfase3{
+    border-bottom: solid 3px var(--glico-text);;
+}
+
+.bottom-border-menu{
+    border-bottom: 3px gray solid;
+}

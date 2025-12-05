@@ -12,33 +12,33 @@
 
 <!--Faixa inicial do dashboard-->
 <div class="row m-3">
-    <div class="col-3">
-        <div class="card ">
-            <div class="card-body bg">
+    <div class="col-sm-12 col-md-6 col-lg-3 col-12 mb-3 ">
+        <div class="card bg b-enfase">
+            <div class="card-body">
                 <h4>Última Medição</h4>
                 <span>{{ultima_medicao}}</span>
             </div>
         </div>
     </div>
-    <div class="col-3">
-        <div class="card ">
-            <div class="card-body bg">
+    <div class="col-sm-12 col-md-6 col-lg-3 col-12 mb-3">
+        <div class="card bg b-enfase">
+            <div class="card-body">
                 <h4>Tempo no Alvo</h4>
                 {{tir_percent}} %
             </div>
         </div>
     </div>
-    <div class="col-3">
-        <div class="card ">
-            <div class="card-body bg">
+    <div class="col-sm-12 col-md-6 col-lg-3 col-12 mb-3">
+        <div class="card bg b-enfase">
+            <div class="card-body">
                 <h4>Glicada Estimada</h4>
                 <span>{{glicada_estimada|floatformat:2 }} %</span>
             </div>
         </div>
     </div>
-    <div class="col-3">
-        <div class="card ">
-            <div class="card-body bg">
+    <div class="col-sm-12 col-md-6 col-lg-3 col-12 mb-3">
+        <div class="card bg b-enfase">
+            <div class="card-body">
                 <h4>Peso Desejado</h4>
                 <span>{{peso_ideal}} Kg</span>
             </div>
@@ -48,27 +48,29 @@
 
 
 <!-- Gráfico de Glicose -->
-<div class="row justify-content-around m-3">
-    <div class="col-12 overflow-auto">
-        <div class="card ">
-            <div class="card-body bg ">
-                <canvas id="glicoseChart" ></canvas>
+<div class="row justify-content-around m-3 ">
+    <div class="col-sm-12 col-md-12 col-12 ">
+        <div class="card bg overflow-auto">
+            <div class="card-body">
+                <div id="areadografico">
+                    <canvas id="glicoseChart" ></canvas>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <div class="row justify-content-around m-3">
-    <div class="col-6 ">
-        <div class="card">
-            <div class="card-body bg">
+    <div class="col-sm-12 col-md-12 col-12 col-lg-6 mb-3">
+        <div class="card bg">
+            <div class="card-body">
                 <canvas id="graficoPesoImc"></canvas>
             </div>
         </div>
     </div>
-    <div class="col-6">
-        <div class="card">
-            <div class="card-body bg">
+    <div class="col-12 col-sm-12 col-md-12 col-lg-6 mb-3">
+        <div class="card bg">
+            <div class="card-body">
                 <canvas id="graficoBiotipo"></canvas>
             </div>
         </div>
@@ -83,6 +85,18 @@
     const tipo = JSON.parse('{{ dados_grafico.tipo|safe }}');
     const historicoPesoImcData = JSON.parse('{{ historico_peso_imc|escapejs }}');
     const historicoBiotipoData = JSON.parse('{{ historico_biotipo|escapejs }}');
+
+
+    if (dados.length > 30) {
+        grafico = document.getElementById("areadografico");
+        grafico.style.width = "150vw";
+        grafico.style.height = "100vh";
+    }
+    else{
+        grafico = document.getElementById("areadografico");
+        grafico.style.width = "94vw";
+        grafico.style.height = "50vh";
+    }
 
     <!-- Gráfico de Glicose    -->
     // 1. Definimos o Plugin customizado para as linhas horizontais
@@ -131,10 +145,10 @@ const ctxGlicose = document.getElementById('glicoseChart').getContext('2d');
 new Chart(ctxGlicose, {
     type: 'line',
     data: {
-        labels: legenda, // Suas variáveis
+        labels: legenda.reverse(), // Suas variáveis
         datasets: [{
             label: 'Glicose (Últimos 30 dias)',
-            data: dados, // Suas variáveis
+            data: dados.reverse(), // Suas variáveis
             borderColor: 'rgb(127, 255, 0)',
             backgroundColor: 'rgb(127, 255, 0)', // Necessário para o datalabels usar a cor
             tension: 0.3,
@@ -145,8 +159,7 @@ new Chart(ctxGlicose, {
     plugins: [ChartDataLabels, horizontalLinesPlugin],
     options: {
         responsive: true,
-        maintainAspectRatio: true,
-        aspectRatio: 3,
+        maintainAspectRatio: false,
         scales: {
             y: {
                 // Sugestão: Definir um min/max sugerido para as linhas sempre aparecerem
@@ -195,35 +208,69 @@ new Chart(ctxGlicose, {
             datasets: [{
                 label: 'Peso (kg)',
                 data: historicoPesoImcData.map(item => parseFloat(item.peso_kg)),
-                backgroundColor: 'rgba(75, 192, 192, 0.8)',
+                backgroundColor: 'rgb(75, 192, 192)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
-                yAxisID: 'y-peso'
-            }, {
+                yAxisID: 'y-peso',
+                categoryPercentage:0.5,
+                datalabels:{
+                    align: 'top',
+                    anchor: 'end',
+                    borderRadius: 10,
+                    borderWidth: 2,
+                    color: 'black',
+                    font: {
+                        size: 10,
+                        weight: 'bold'
+                    },
+                    formatter: function (value, context) {
+                        return value;
+                    },
+                    offset: -25
+                }
+            },
+            {
                 label: 'IMC',
                 data: historicoPesoImcData.map(item => parseFloat(item.imc)),
-                backgroundColor: 'rgba(255, 206, 86, 0.8)',
+                backgroundColor: 'rgb(255, 206, 86)',
                 borderColor: 'rgba(255, 206, 86, 1)',
+                categoryPercentage:0.5,
                 borderWidth: 1,
-                datalabels: {
-                    formatter: function (value, context) {
-                        return value + " Kg/m2";
+                font:{
+                    size:10,
+                    weight: 'bold'
+                },
+                datalabels:{
+                align:'top',
+                anchor: 'end',
+                offset: -25,
+                color: 'black',
+                font:{
+                    size:10,
+                    weight: 'bold'
+                },
+                formatter: function (value, context) {
+                        return value
                     }
                 },
                 yAxisID: 'y-imc'
             }]
         },
         options: {
+        responsive: true,
             scales: {
                 'y-peso': {
                     type: 'linear',
                     position: 'left',
+                    stacked: true,
+                    grace: 10,
                     title: {
                         display: true,
                         text: 'Peso (kg)'
                     }
                 },
                 'y-imc': {
+                grace: 10,
                     type: 'linear',
                     position: 'right',
                     title: {
@@ -231,7 +278,7 @@ new Chart(ctxGlicose, {
                         text: 'IMC'
                     },
                     grid: {
-                        drawOnChartArea: false
+                        drawOnChartArea: true
                     }
                 },
                 x: {
@@ -241,33 +288,13 @@ new Chart(ctxGlicose, {
                     }
                 }
             },
-            plugins: {
-                datalabels: {
-                    align: 'end',
-                    anchor: 'end',
-                    backgroundColor: function (context) {
-                        return context.dataset.borderColor;
-                    },
-                    borderRadius: 10,
-                    borderWidth: 2,
-                    color: 'white',
-                    font: {
-                        weight: 'bold'
-                    },
-                    formatter: function (value, context) {
-                        return value + ' kg';
-                    },
-                    padding: 6,
-                    offset: 8
-                },
                 title: {
                     display: true,
                     text: 'Peso e IMC'
                 }
-            },
+            }
 
-        }
-    });
+        });
 
     // --- Gráfico de Biotipo ---
     const ctxBiotipo = document.getElementById('graficoBiotipo').getContext('2d');
@@ -282,17 +309,17 @@ new Chart(ctxGlicose, {
                 backgroundColor: 'rgb(49, 103, 237)',
                 borderColor: 'rgb(49, 103, 237)',
                 borderWidth: 1,
-                barThickness: 30,
+                categoryPercentage:0.5,
                 datalabels: {
-                    backgroundColor: 'rgb(49, 103, 237)',
-                    align: "end",
-                    padding: 6,
+                    align: 'end',
+                    anchor: 'top',
+                    offset:-25,
                     textAlign: "center",
                     anchor: "end",
                     formatter: function (value) {
                         return value;
                     },
-                    color: 'white',
+                    color: 'black',
                     font: {
                         weight: 'bold',
                         size: 10
@@ -304,17 +331,17 @@ new Chart(ctxGlicose, {
                 backgroundColor: 'rgba(50, 182, 41, 0.9)',
                 borderColor: 'rgba(50, 182, 41, 1)',
                 borderWidth: 1,
-                barThickness: 30,
+                categoryPercentage:0.5,
                 datalabels: {
-                    backgroundColor: 'rgba(50, 182, 41, 1)',
-                    align: "end",
-                    padding: 6,
+                    align: 'end',
+                    anchor: 'top',
+                    offset:-25,
                     textAlign: "center",
                     anchor: "end",
                     formatter: function (value) {
                         return value;
                     },
-                    color: 'white',
+                    color: 'black',
                     font: {
                         weight: 'bold',
                         size: 10
@@ -326,17 +353,17 @@ new Chart(ctxGlicose, {
                 backgroundColor: 'rgba(255, 159, 64, 0.9)',
                 borderColor: 'rgba(255, 159, 64, 1)',
                 borderWidth: 1,
-                barThickness: 30,
+                categoryPercentage:0.5,
                 datalabels: {
-                    backgroundColor: 'rgba(255, 159, 64, 1)',
-                    align: "end",
-                    padding: 6,
+                    align: 'end',
+                    anchor: 'top',
+                    offset:-25,
                     textAlign: "center",
                     anchor: "end",
                     formatter: function (value) {
                         return value;
                     },
-                    color: 'white',
+                    color: 'black',
                     font: {
                         weight: 'bold',
                         size: 10
@@ -348,17 +375,17 @@ new Chart(ctxGlicose, {
                 backgroundColor: 'rgba(153, 102, 255, 0.9)',
                 borderColor: 'rgba(153, 102, 255, 1)',
                 borderWidth: 1,
-                barThickness: 30,
+                categoryPercentage:0.5,
                 datalabels: {
-                    backgroundColor: 'rgba(153, 102, 255, 1)',
-                    align: "end",
-                    padding: 6,
+                    align: 'end',
+                    anchor: 'top',
+                    offset:-25,
                     textAlign: "center",
                     anchor: "end",
                     formatter: function (value) {
                         return value;
                     },
-                    color: 'white',
+                    color: 'black',
                     font: {
                         weight: 'bold',
                         size: 10
@@ -370,17 +397,17 @@ new Chart(ctxGlicose, {
                 backgroundColor: 'rgba(255, 99, 132, 0.9)',
                 borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 1,
-                barThickness: 30,
+                categoryPercentage:0.5,
                 datalabels: {
-                    backgroundColor: 'rgba(255, 99, 132, 1)',
-                    align: "end",
-                    padding: 6,
+                    align: 'end',
+                    anchor: 'top',
+                    offset:-25,
                     textAlign: "center",
                     anchor: "end",
                     formatter: function (value) {
                         return value;
                     },
-                    color: 'white',
+                    color: 'black',
                     font: {
                         weight: 'bold',
                         size: 10
