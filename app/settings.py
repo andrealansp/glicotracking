@@ -51,7 +51,7 @@ ALLOWED_HOSTS = ['glicotracking.alvesdevpy.com.br', '127.0.0.1', 'localhost','*'
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
+    "hide_admin.apps.HideAdminConfig",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",

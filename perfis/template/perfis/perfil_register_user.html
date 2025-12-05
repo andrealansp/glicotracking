@@ -21,12 +21,20 @@
         <!--Cabeçalho-->
         <div class="row justify-content-center ">
             <div class="col-sm-12 col-lg-8 bg">
-                {% bootstrap_messages %}
-                {% bootstrap_form_errors form %}
                 <input class="btn btn-warning my-3" type="reset" value="Retornar"
                        onClick="history.back()"/>
             </div>
         </div>
+
+        {% if form.errors %}
+        <div class="row justify-content-center ">
+            <div class="col-sm-12 col-lg-8 bg">
+                <ul>
+                    <li>{% bootstrap_form_errors form %}</li>
+                </ul>
+            </div>
+        </div>
+        {% endif %}
 
         <div class="row justify-content-center my-3">
             <div class="col-sm-12 col-lg-8 bg p-3">

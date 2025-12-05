@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block content %}
 <div class="container-content expandido" id="conteudo">
     <h2 class="m-4 text-center">
-    Tem certeza que deseja apagar o exame do {{object.medico }}
+    Tem certeza que deseja apagar o exame do {{object.nome }}
     </h2>
     <form action="" method="post">
         {% csrf_token %}

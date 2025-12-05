@@ -21,13 +21,13 @@
             <form method="get">
                 <div class="row">
                     {% csrf_token %}
-                    <div class="col-3 col-md-3">
+                    <div class="col-12 col-sm-12 col-md-3 col-lg-3" >
                         {% bootstrap_field form.tipo_medicao show_label='skip' size="sm" %}
                     </div>
-                    <div class="col-3 col-md-3">
+                    <div class="col-12 col-sm-12 col-md-3 col-lg-3">
                         {% bootstrap_field form.mes show_label='skip' size="sm" %}
                     </div>
-                    <div class="col-6 col-md-6">
+                    <div class="col-12 col-sm-12 col-md-6 col-lg-6">
                         {% bootstrap_button "Enviar" size="sm" %}
                     </div>
                 </div>

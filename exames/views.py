@@ -15,6 +15,10 @@ class ExameListView(LoginRequiredMixin, ListView):
     model = Exame
     template_name = 'perfil_list.html'
 
+    def get_queryset(self):
+        instancia = super().get_queryset().filter(perfil=self.request.user.perfil)
+        return instancia
+
 
 class CreateExameView(LoginRequiredMixin, View):
     model = Exame

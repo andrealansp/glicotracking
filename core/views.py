@@ -30,9 +30,8 @@ class RelatorioMedicoesView(TemplateView):
         historico_peso_imc = HistoricoPesoImc.objects.filter(perfil=perfil).order_by('data_registro')
         historico_peso_imc_lista = [
             {'data_registro': item.data_registro.isoformat(),
-             'peso_kg': str(item.peso_kg),
-             'imc': str(item.imc)} for
-            item in historico_peso_imc]
+             'peso': str(item.peso),
+             'imc': str(item.imc)} for item in historico_peso_imc]
 
         historico_biotipo = HistoricoBioTipo.objects.filter(perfil=perfil).order_by('data_registro')
         historico_biotipo_lista = [{

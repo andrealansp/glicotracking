@@ -23,6 +23,17 @@ class RegistroForm(UserCreationForm):
         fields = ('username', 'first_name', 'last_name', 'telefone', 'email', 'sexo', 'data_nascimento', 'password1',
                   'password2')
 
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        confirm_password = cleaned_data.get('confirm_password')
+
+        if password and confirm_password and password != confirm_password:
+            self.add_error('confirm_password', "Passwords do not match.")  # Field-specific error
+            # Or raise ValidationError("Passwords do not match.") for a non-field error
+
+        return cleaned_data
+
 class PerfilUpdateForm(forms.ModelForm):
     class Meta:
         model = Perfil
@@ -31,7 +42,7 @@ class PerfilUpdateForm(forms.ModelForm):
 class HistoricoPesoImcForm(forms.ModelForm):
     class Meta:
         model = HistoricoPesoImc
-        fields = ['peso_kg']
+        fields = ['peso']
 
 class HistoricoBiotipoForm(forms.ModelForm):
     class Meta:

@@ -14,13 +14,14 @@
                 </div>
             </div>
         </div>
-        <div class="row bg m-3 p-3">
+        <div class="row bg m-3 p-3 overflow-auto">
             <div class="col">
                 <table class="table table-sm table-striped" id="tblpeso">
                     <thead>
                     <tr>
                         <th>Peso</th>
                         <th>IMC</th>
+                        <th>Grau de Obesidade</th>
                         <th>Data da Medição</th>
                         <th>Ações</th>
                     </tr>
@@ -28,11 +29,13 @@
                     <tbody>
                     {% for o in object_list %}
                         <tr>
-                            <td>{{ o.peso_kg }}</td>
+                            <td>{{ o.peso }}</td>
                             <td>{{ o.imc }}</td>
+                            <td>{{ o.grau_obesidade}}</td>
                             <td>{{ o.data_registro }}</td>
-                            <td><a href="{% url "perfis:peso_atualiza" pk=o.id %}" class="btn btn-sm btn-primary"><i class="bi bi-pencil-square"></i></a> |
-                                <a href="{% url "perfis:peso_delete" pk=o.id %}" class="btn btn-sm btn-danger "><i class="bi bi-trash3"></i></a>
+
+                            <td><a href="{% url 'perfis:peso_atualiza' pk=o.id %}" class="btn btn-sm btn-primary"><i class="bi bi-pencil-square"></i></a> |
+                                <a href="{% url 'perfis:peso_delete' pk=o.id %}" class="btn btn-sm btn-danger "><i class="bi bi-trash3"></i></a>
                             </td>
                         </tr>
                     {% endfor %}

@@ -84,3 +84,7 @@ font-size: small;
     overflow-x: auto;  /* Scroll horizontal para muitos pontos */
     max-width: 100%;
 }
+.graficos{
+height: 40vh;
+width: auto;
+}
