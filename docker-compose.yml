@@ -22,7 +22,8 @@ services:
 
   glicotck:
     image: glicotrackingstack:latest
-    command: gunicorn app.wsgi:application --bind 0.0.0.0:8000 --workers 4  # Adicionado workers para consistência com Dockerfile
+    entrypoint: ["/glicotracking/entrypoint.sh"]  # Aponta para o script de init
+    command: ["gunicorn", "app.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]  # Gunicorn como command (chamado pelo script)
     environment:
       - DJANGO_SETTINGS_MODULE=app.settings
       - SECRET_KEY_FILE=/run/secrets/django_secret_key  # Use secrets para segurança (crie com docker secret create)
