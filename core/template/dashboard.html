@@ -155,8 +155,8 @@
                 data: dados.reverse(), // Suas variáveis
                 borderColor: 'rgb(127, 255, 0)',
                 backgroundColor: 'rgb(127, 255, 0)', // Necessário para o datalabels usar a cor
-                tension: 0.3,
-                pointRadius: 4, // Tamanho da bolinha
+                tension: 0.1,
+                pointRadius: 3, // Tamanho da bolinha
             }]
         },
         // 3. REGISTRO DOS PLUGINS (Aqui é a mudança principal)
@@ -220,6 +220,7 @@
                 borderWidth: 1,
                 yAxisID: 'y-peso',
                 categoryPercentage: 0.5,
+                tension:0.3,
                 datalabels: {
                     align: 'top',
                     anchor: 'end',
@@ -301,7 +302,7 @@
                 'y-imc': {
                     type: 'linear',
                     position: 'right',
-                    grace: 10,
+                    grace: 5,
                     title: {
                         display: true,
                         text: 'IMC'

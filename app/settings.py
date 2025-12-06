@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+
+import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -102,30 +105,32 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "app.wsgi.application"
 
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+# Configuração de banco de dados
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
-    }
+    'default': {}
 }
 
+# Parse DATABASE_URL do ambiente (prioridade alta)
+db_from_env = os.environ.get('DATABASE_URL')
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "local.sqlite3",
-#         "OPTIONS": {
-#             "init_command": "PRAGMA synchronous=3; PRAGMA cache_size=2000;",
-#         },
-#     }
-# }
+if db_from_env:
+    # Usa dj-database-url para parsear (suporta ?params na URL, como client_encoding)
+    DATABASES['default'] = dj_database_url.parse(db_from_env, conn_max_age=600)
+
+    # Encoding via URL é preferível; fallback para OPTIONS se não estiver na URL
+    if 'client_encoding' not in DATABASES['default'].get('OPTIONS', {}):
+        DATABASES['default']['OPTIONS'] = {
+            'client_encoding': 'utf8mb4',  # Corrigido: 'client_encoding' em vez de 'charset'
+        }
+else:
+    # Fallback para SQLite em dev (sem DATABASE_URL)
+    if os.environ.get('DEBUG', 'False') == 'True':
+        DATABASES['default'] = {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'local.sqlite3',
+        }
+    else:
+        raise ImproperlyConfigured("DATABASE_URL não definida para produção")
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -161,10 +166,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
-
 STATIC_URL = "static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
@@ -181,3 +182,22 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "/core/dashboard"
 LOGOUT_REDIRECT_URL = "/login"
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': 'django_errors.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}

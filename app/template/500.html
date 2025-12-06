@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns="http://www.w3.org/1999/html">
+{% load static %} {% load django_bootstrap5 %}
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Glico Tracking</title>
+    {% bootstrap_css %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'styles/base.css' %}">
+</head>
+<body>
+<div class="container">
+    <div class="row m-1 p-5">
+        <div class="col-12 text-center">
+            <img src="{% static 'images/logo.png' %}" width="200px" alt="Logo GlicoTracking"></a>
+        </div>
+    </div>
+    <div class="row m-3 bg p-5">
+        <div class="col-12">
+            <h1>Erro Interno do Servidor (500)</h1>
+
+        <p>Ops! Algo deu errado no nosso lado. <br>
+          😔 Nosso servidor encontrou um erro interno temporário – como um roteador sobrecarregado em hora de pico. <br>
+          Estamos trabalhando para resolver isso rapidinho. - **<b>O que fazer agora?</b>** - Tente recarregar a página (F5 ou Ctrl+R).
+          <br> - Volte para a  <a href="{% url 'core:dashboard' %}"> Dashboard</a>  e tente novamente em alguns minutos.
+          <br> - Se persistir, entre em contato com o suporte para ajudar. Obrigado pela paciência!
+          <br> Voltaremos ao ar em instantes. #Erro500 #ManutençãoRápida</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

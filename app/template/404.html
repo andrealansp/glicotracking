@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns="http://www.w3.org/1999/html">
+{% load static %} {% load django_bootstrap5 %}
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Glico Tracking</title>
+    {% bootstrap_css %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'styles/base.css' %}">
+</head>
+<body>
+<div class="container">
+    <div class="row m-1 p-5">
+        <div class="col-12 text-center">
+            <img src="{% static 'images/logo.png' %}" width="200px" alt="Logo GlicoTracking"></a>
+        </div>
+    </div>
+    <div class="row m-3 bg p-5">
+        <div class="col-12">
+            <h1>Ops! Página Não Encontrada</h1>
+            <br>
+            <p>Ei, explorador digital! A página que você está procurando parece ter evaporado no éter da internet
+                <br>– tipo um sinal de Wi-Fi fraco em uma reunião importante. 😅
+                <br>Não se preocupe, isso acontece até com os melhores sistemas web.</p>
+            <p><b>**O que fazer agora?**</b>
+                <br> -Verifique se o URL está correto (sem erros de digitação). <br> - Volte para o <a
+                        href="{% url 'core:dashboard' %}"> Dashboard</a> e navegue de novo.
+                <br>- Ou use a barra de busca no topo para encontrar o que precisa.</p>
+            <p> Se o problema persistir, entre em contato conosco.
+                <br>Estamos aqui para reconectar você ao conteúdo certo! #404 #PáginaPerdida</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
