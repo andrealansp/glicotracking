@@ -31,8 +31,11 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG")
 
-ALLOWED_HOSTS = ['glicotracking.alvesdevpy.com.br', '127.0.0.1', 'localhost']
-CSRF_TRUSTED_ORIGINS = ["https://glicotracking.alvesdevpy.com.br", "http://www.glicotracking.alvesdevpy.com.br"]
+ALLOWED_HOSTS = ['glicotracking.alvesdevpy.com.br', "glicotracking.com.br", '127.0.0.1', 'localhost']
+CSRF_TRUSTED_ORIGINS = ["https://glicotracking.alvesdevpy.com.br",
+                        "http://www.glicotracking.alvesdevpy.com.br",
+                        "https://glicotracking.com.br",
+                        "http://glicotracking.com.br"]
 
 # Reconhecer HTTPS por trás do Traefik
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
@@ -122,15 +125,15 @@ if db_from_env:
         DATABASES['default']['OPTIONS'] = {
             'client_encoding': 'utf8mb4',  # Corrigido: 'client_encoding' em vez de 'charset'
         }
-else:
-    # Fallback para SQLite em dev (sem DATABASE_URL)
-    if os.environ.get('DEBUG', 'False') == 'True':
-        DATABASES['default'] = {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'local.sqlite3',
-        }
-    else:
-        raise ImproperlyConfigured("DATABASE_URL não definida para produção")
+# else:
+#     # Fallback para SQLite em dev (sem DATABASE_URL)
+#     if os.environ.get('DEBUG', 'False') == 'True':
+#         DATABASES['default'] = {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': BASE_DIR / 'local.sqlite3',
+#         }
+#     else:
+#         raise ImproperlyConfigured("DATABASE_URL não definida para produção")
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
