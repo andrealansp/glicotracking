@@ -2,7 +2,7 @@
 FROM python:3.12-slim
 
 # Define o diretório de trabalho dentro do contêiner
-WORKDIR /glicotracking
+WORKDIR /app
 
 # Variáveis de ambiente no formato moderno (evita warnings e melhora legibilidade)
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     postgresql-client \
     libpq-dev \
     gcc \
+    vim \
     && rm -rf /var/lib/apt/lists/
 
 # Copia apenas requirements.txt primeiro (melhora cache em rebuilds)
@@ -29,7 +30,7 @@ COPY . .
 RUN python manage.py collectstatic --noinput
 
 # Torna entrypoint executável
-RUN chmod +x /glicotracking/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
 
 # Expose a porta que o Gunicorn vai escutar internamente
