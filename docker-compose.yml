@@ -21,7 +21,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   glicotck:
-    image: glicotrackingstack:latest
+    image: glicotracking:v1
     entrypoint: ["/glicotracking/entrypoint.sh"]  # Aponta para o script de init
     command: ["gunicorn", "app.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]  # Gunicorn como command (chamado pelo script)
     environment:
