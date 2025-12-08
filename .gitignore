@@ -3,6 +3,7 @@ __pycache__/
 /backup
 *.py[codz]
 *$py.class
+backup/local.sqlite3
 
 # C extensions
 *.so
