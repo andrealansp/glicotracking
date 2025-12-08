@@ -1,5 +1,5 @@
 .venv
 .git
-.gitignre
+.gitignore
 venv
 __pychache__
