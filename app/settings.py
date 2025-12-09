@@ -118,19 +118,10 @@ DATABASES = {
 
 db_from_env = os.getenv("DATABASE_URL")
 
-if db_from_env:
-    DATABASES['default'] = dj_database_url.parse(db_from_env, conn_max_age=600)
+DATABASES['default'] = dj_database_url.parse(db_from_env, conn_max_age=600)
 
-    if 'client_encoding' not in DATABASES['default'].get('OPTIONS', {}):
-        DATABASES['default'].setdefault('OPTIONS', {})['client_encoding'] = 'utf8mb4'
-else:
-    if DEBUG:
-        DATABASES['default'] = {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'local.sqlite3',
-        }
-    else:
-        raise ImproperlyConfigured("DATABASE_URL não definida para produção")
+if 'client_encoding' not in DATABASES['default'].get('OPTIONS', {}):
+    DATABASES['default'].setdefault('OPTIONS', {})['client_encoding'] = 'utf8mb4'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
