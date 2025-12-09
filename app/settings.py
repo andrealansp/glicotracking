@@ -16,7 +16,10 @@ import os
 import dj_database_url
 from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
-load_dotenv()
+
+
+def get_bool_env(name, default=False):
+    return str(os.getenv(name, str(default))).lower() in ("1", "true", "yes")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,7 +32,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG")
+DEBUG = get_bool_env("DEBUG", default=False)
 
 ALLOWED_HOSTS = ['glicotracking.alvesdevpy.com.br', "glicotracking.com.br", '127.0.0.1', 'localhost']
 CSRF_TRUSTED_ORIGINS = ["https://glicotracking.alvesdevpy.com.br",
@@ -113,21 +116,15 @@ DATABASES = {
     'default': {}
 }
 
-# Parse DATABASE_URL do ambiente (prioridade alta)
-db_from_env = os.environ.get('DATABASE_URL')
+db_from_env = os.getenv("DATABASE_URL")
 
 if db_from_env:
-    # Usa dj-database-url para parsear (suporta ?params na URL, como client_encoding)
     DATABASES['default'] = dj_database_url.parse(db_from_env, conn_max_age=600)
 
-    # Encoding via URL é preferível; fallback para OPTIONS se não estiver na URL
     if 'client_encoding' not in DATABASES['default'].get('OPTIONS', {}):
-        DATABASES['default']['OPTIONS'] = {
-            'client_encoding': 'utf8mb4',  # Corrigido: 'client_encoding' em vez de 'charset'
-        }
+        DATABASES['default'].setdefault('OPTIONS', {})['client_encoding'] = 'utf8mb4'
 else:
-    # Fallback para SQLite em dev (sem DATABASE_URL)
-    if os.environ.get('DEBUG', 'False') == 'True':
+    if DEBUG:
         DATABASES['default'] = {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'local.sqlite3',

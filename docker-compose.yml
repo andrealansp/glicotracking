@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  glicoctk_bd:
+  bancodados:
     image: postgres:latest
     restart: always
     environment:
@@ -18,11 +18,11 @@ services:
     networks:
       - alvesdevpynet
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/18/data
 
-  glicotck:
+  web:
     image: glicotracking:v1
-    entrypoint: ["/glicotracking/entrypoint.sh"]  # Aponta para o script de init
+    entrypoint: ["/app/entrypoint.sh"]  # Aponta para o script de init
     command: ["gunicorn", "app.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]  # Gunicorn como command (chamado pelo script)
     environment:
       - DJANGO_SETTINGS_MODULE=app.settings
@@ -36,8 +36,7 @@ services:
     networks:
       - alvesdevpynet
     depends_on:
-      glicoctk_bd:
-        condition: service_healthy  # App espera DB saudável
+      - bancodados
     # Simplificado para Compose padrão; adicione deploy se usar Swarm
     deploy:
       mode: replicated
