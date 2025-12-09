@@ -1,40 +1,46 @@
-# Use uma imagem base Python slim para menor tamanho (3.12 estável em vez de 3.15 alpha)
+# Usa imagem slim estável
 FROM python:3.12-slim
 
-# Define o diretório de trabalho dentro do contêiner
+# Diretório de trabalho
 WORKDIR /app
 
-# Variáveis de ambiente no formato moderno (evita warnings e melhora legibilidade)
+# Variáveis padrão
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Instala dependências do sistema (otimizado para cache)
+# Dependências do sistema
 RUN apt-get update && apt-get install -y \
     postgresql-client \
     libpq-dev \
     gcc \
-    vim \
-    && rm -rf /var/lib/apt/lists/
+    && rm -rf /var/lib/apt/lists/*
 
-# Copia apenas requirements.txt primeiro (melhora cache em rebuilds)
+# Arquivo de dependências
 COPY requirements.txt .
 
-# Atualiza o PIP e instala dependências (sem cache para reduzir tamanho)
+# Instala dependências Python
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copia o resto do código (após instalação, para cache eficiente)
+# COPIA O ARQUIVO .env.build (somente para o build)
+# Nunca copie .env real para a imagem
+COPY .env.build /app/.env.build
+
+# Carrega somente durante o build (para collectstatic)
+RUN export $(grep -v '^#' /app/.env.build | xargs) && \
+    rm /app/.env.build
+
+# Copia o resto do código
 COPY . .
 
-# Comando para coletar arquivos estáticos (assume settings configurados)
+# Coleta arquivos estáticos usando variáveis carregadas
 RUN python manage.py collectstatic --noinput
 
 # Torna entrypoint executável
 RUN chmod +x /app/entrypoint.sh
 
-
-# Expose a porta que o Gunicorn vai escutar internamente
+# Porta interna
 EXPOSE 8000
 
-# Comando padrão para iniciar o Gunicorn (sintaxe corrigida: valores após flags)
+# Inicia Gunicorn
 CMD ["gunicorn", "app.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]
