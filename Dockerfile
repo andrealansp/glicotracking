@@ -4,6 +4,8 @@ WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV DATABASE_URL=$DATABASE_URL
+ENV SECRET_KEY=$SECRET_KEY
 
 # Instala dependências do sistema (incluindo PostgreSQL client para migrações)
 RUN apt-get update && apt-get install -y \
