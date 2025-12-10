@@ -23,7 +23,7 @@ COPY .env.build /app/.env.build
 RUN export $(grep -v '^#' /app/.env.build | xargs) && \
     rm /app/.env.build
 
-RUM printenv
+RUN printenv
 
 # Arquivo de dependências
 COPY requirements.txt .
