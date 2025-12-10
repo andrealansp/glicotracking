@@ -15,13 +15,6 @@ RUN apt-get update && apt-get install -y \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Arquivo de dependências
-COPY requirements.txt .
-
-# Instala dependências Python
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
-
 # COPIA O ARQUIVO .env.build (somente para o build)
 # Nunca copie .env real para a imagem
 COPY .env.build /app/.env.build
@@ -29,6 +22,13 @@ COPY .env.build /app/.env.build
 # Carrega somente durante o build (para collectstatic)
 RUN export $(grep -v '^#' /app/.env.build | xargs) && \
     rm /app/.env.build
+
+# Arquivo de dependências
+COPY requirements.txt .
+
+# Instala dependências Python
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Copia o resto do código
 COPY . .
