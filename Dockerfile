@@ -5,6 +5,7 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# Instala dependências do sistema (incluindo PostgreSQL client para migrações)
 RUN apt-get update && apt-get install -y \
     postgresql-client \
     libpq-dev \
@@ -12,22 +13,25 @@ RUN apt-get update && apt-get install -y \
     vim \
     && rm -rf /var/lib/apt/lists/*
 
+# Copia requirements e instala pacotes Python
 COPY requirements.txt .
-
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
+# Copia o código da aplicação
 COPY . .
 
+# Coleta static files (pode ser movido para entrypoint se precisar de envs dinâmicas)
 RUN python manage.py collectstatic --noinput
 
-COPY .env.build /app/.env.build
-
-RUN export $(grep -v '^#' /app/.env.build | grep -E '^(SECRET_KEY|DEBUG)=' | xargs) && \
-    rm /app/.env.build &&  \
-
+# Garante que entrypoint é executável (entrypoint.sh lerá secrets e setará envs)
 RUN chmod +x /app/entrypoint.sh
 
+# Expõe a porta do Gunicorn
 EXPOSE 8000
 
+# Entry point inicia o app após setup (migrações, etc.)
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+# Comando padrão: Gunicorn (pode ser sobrescrito no compose)
 CMD ["gunicorn", "app.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]

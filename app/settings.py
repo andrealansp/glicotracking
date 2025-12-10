@@ -15,6 +15,19 @@ import os
 
 import dj_database_url
 
+db_url_file = os.environ.get('DATABASE_URL_FILE')
+if db_url_file and os.path.exists(db_url_file):
+    with open(db_url_file, 'r') as f:
+        DATABASE_URL_GTK = f.read().strip()
+    DATABASE_URL = DATABASE_URL_GTK  # Ou use diretamente
+else:
+    DATABASE_URL = os.environ.get('DATABASE_URL', 'fallback_value')
+
+# Similar para SECRET_KEY
+secret_key_file = os.environ.get('SECRET_KEY_FILE')
+if secret_key_file and os.path.exists(secret_key_file):
+    with open(secret_key_file, 'r') as f:
+        SECRET_KEY = f.read().strip()
 
 def get_bool_env(name, default=False):
     return str(os.getenv(name, str(default))).lower() in ("1", "true", "yes")
@@ -27,7 +40,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = get_bool_env("DEBUG", default=False)
@@ -114,10 +127,9 @@ DATABASES = {
     'default': {}
 }
 
-db_from_env = os.getenv("DATABASE_URL")
 
-if db_from_env:
-    DATABASES['default'] = dj_database_url.parse(db_from_env, conn_max_age=600)
+if DATABASE_URL:
+    DATABASES['default'] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
 
     if 'client_encoding' not in DATABASES['default'].get('OPTIONS', {}):
         DATABASES['default'].setdefault('OPTIONS', {})['client_encoding'] = 'utf8mb4'
