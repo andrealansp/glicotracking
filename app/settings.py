@@ -23,8 +23,13 @@ if db_url_file and os.path.exists(db_url_file):
 else:
     DATABASE_URL = os.environ.get('DATABASE_URL', 'fallback_value')
 
+print(DATABASE_URL)
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 # Similar para SECRET_KEY
 secret_key_file = os.environ.get('GTK_SECRET_KEY')
+print(secret_key_file)
 if secret_key_file and os.path.exists(secret_key_file):
     with open(secret_key_file, 'r') as f:
         SECRET_KEY = f.read().strip()
