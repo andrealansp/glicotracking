@@ -2,19 +2,19 @@
 
 # Lê secrets de /run/secrets/ e exporta como envs (substitui .env.build)
 if [ -f /run/secrets/gtk_secret_key ]; then
-    export GTK_SECRET_KEY=$(cat /run/secrets/gtk_secret_key)
+    export GTK_SECRET_KEY=$(cat /run/secrets/GTK_SECRET_KEY)
 fi
 
 if [ -f /run/secrets/db_password_gtk ]; then
-    export DB_PASSWORD_GTK=$(cat /run/secrets/db_password_gtk)
+    export DB_PASSWORD_GTK=$(cat /run/secrets/DB_PASSWORD_GTK)
 fi
 
 if [ -f /run/secrets/db_name_gtk ]; then
-    export DB_NAME_GTK=$(cat /run/secrets/db_name_gtk)
+    export DB_NAME_GTK=$(cat /run/secrets/DB_NAME_GTK)
 fi
 
 if [ -f /run/secrets/database_url_gtk ]; then
-    export DATABASE_URL_GTK=$(cat /run/secrets/database_url_gtk)
+    export DATABASE_URL_GTK=$(cat /run/secrets/DATABASE_URL_GTK)
 fi
 
 # Monta DATABASE_URL usando as secrets (exemplo: se não usar a URL completa)

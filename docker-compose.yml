@@ -1,11 +1,11 @@
 services:
   bancodados:
-    image: postgres:17.7  # Atualizado para 17.7 como você pediu
+    image: postgres:17.7
     restart: always
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}  # Mantenha por enquanto; migre para secret depois
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 10s
@@ -16,7 +16,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - "5434:5432"  # Mantido para acesso local (dev)
+      - "5434:5432"
 
   web:
     image: glicotracking:v1
@@ -24,13 +24,12 @@ services:
     command: ["gunicorn", "app.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]
     environment:
       - DJANGO_SETTINGS_MODULE=app.settings
-      - SECRET_KEY_FILE=/run/secrets/gtk_secret_key  # Para SECRET_KEY
-      - DATABASE_URL_FILE=/run/secrets/database_url_gtk  # Lê DATABASE_URL_GTK de secret (visível no Django via file)
-      - DB_NAME_FILE=/run/secrets/db_name_gtk  # Opcional
-      - DB_PASSWORD_FILE=/run/secrets/db_password_gtk  # Opcional, se precisar
+      - SECRET_KEY_FILE=/run/secrets/GTK_SECRET_KEY  # Path case sensitive
+      - DATABASE_URL_FILE=/run/secrets/DATABASE_URL_GTK
+      - DB_NAME_FILE=/run/secrets/DB_NAME_GTK
+      - DB_PASSWORD_FILE=/run/secrets/DB_PASSWORD_GTK
       - ALLOWED_HOSTS=glicotracking.alvesdevpy.com.br
       - DEBUG=${DEBUG}
-      # Remova a linha DATABASE_URL hardcoded; construa no entrypoint ou leia do file
     volumes:
       - glico_data:/glicotracking
       - static_volume:/glicotracking/static
@@ -55,11 +54,11 @@ services:
         - "traefik.http.routers.glicotck.service=glicotck"
         - "traefik.http.services.glicotck.loadbalancer.server.port=8000"
         - "traefik.http.services.glicotck.loadbalancer.passHostHeader=1"
-    secrets:  # Monta secrets no container web
-      - database_url_gtk
-      - gtk_secret_key
-      - db_name_gtk
-      - db_password_gtk  # Adicione se precisar no entrypoint
+    secrets:
+      - GTK_SECRET_KEY
+      - DATABASE_URL_GTK
+      - DB_NAME_GTK
+      - DB_PASSWORD_GTK
 
 volumes:
   pgdata:
@@ -72,13 +71,12 @@ networks:
     external: true
     driver: overlay
 
-# Secrets (crie com docker secret create ou file: para dev)
 secrets:
-  database_url_gtk:
-    external: true  # Ou file: ./secrets/database_url_gtk.txt (conteúdo: postgresql://user:pass@bancodados:5432/db)
-  gtk_secret_key:
+  GTK_SECRET_KEY:
     external: true
-  db_name_gtk:
+  DATABASE_URL_GTK:
     external: true
-  db_password_gtk:
+  DB_NAME_GTK:
+    external: true
+  DB_PASSWORD_GTK:
     external: true
