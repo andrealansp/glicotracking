@@ -15,7 +15,7 @@ import os
 
 import dj_database_url
 
-db_url_file = os.environ.get('DATABASE_URL_FILE')
+db_url_file = os.environ.get('DATABASE_URL')
 if db_url_file and os.path.exists(db_url_file):
     with open(db_url_file, 'r') as f:
         DATABASE_URL_GTK = f.read().strip()
@@ -24,7 +24,7 @@ else:
     DATABASE_URL = os.environ.get('DATABASE_URL', 'fallback_value')
 
 # Similar para SECRET_KEY
-secret_key_file = os.environ.get('SECRET_KEY_FILE')
+secret_key_file = os.environ.get('GTK_SECRET_KEY')
 if secret_key_file and os.path.exists(secret_key_file):
     with open(secret_key_file, 'r') as f:
         SECRET_KEY = f.read().strip()
