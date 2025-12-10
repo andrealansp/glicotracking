@@ -21,17 +21,17 @@ RUN pip install --upgrade pip && \
 # Copia o código da aplicação
 COPY . .
 
-# Coleta static files (pode ser movido para entrypoint se precisar de envs dinâmicas)
-RUN python manage.py collectstatic --noinput
-
 # Garante que entrypoint é executável (entrypoint.sh lerá secrets e setará envs)
 RUN chmod +x /app/entrypoint.sh
 
-# Expõe a porta do Gunicorn
-EXPOSE 8000
-
 # Entry point inicia o app após setup (migrações, etc.)
 ENTRYPOINT ["/app/entrypoint.sh"]
+
+# Coleta static files (pode ser movido para entrypoint se precisar de envs dinâmicas)
+RUN python manage.py collectstatic --noinput
+
+# Expõe a porta do Gunicorn
+EXPOSE 8000
 
 # Comando padrão: Gunicorn (pode ser sobrescrito no compose)
 CMD ["gunicorn", "app.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]
