@@ -17,17 +17,14 @@ COPY requirements.txt .
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
+COPY . .
+
 RUN python manage.py collectstatic --noinput
 
-# ---------- SOMENTE VARIÁVEIS NECESSÁRIAS PARA O BUILD ----------
 COPY .env.build /app/.env.build
 
-# Carrega apenas SECRET_KEY e DEBUG para o build
 RUN export $(grep -v '^#' /app/.env.build | grep -E '^(SECRET_KEY|DEBUG)=' | xargs) && \
     rm /app/.env.build &&  \
-
-# Copia código
-COPY . .
 
 RUN chmod +x /app/entrypoint.sh
 
