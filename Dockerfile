@@ -1,47 +1,33 @@
-# Usa imagem slim estável
 FROM python:3.12-slim
 
-# Diretório de trabalho
+# Define o diretório de trabalho
 WORKDIR /app
 
-# Variáveis padrão
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# Dependências do sistema
+# Instala dependências do sistema: PostgreSQL e gcc
 RUN apt-get update && apt-get install -y \
-    postgresql-client \
-    libpq-dev \
     gcc \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# COPIA O ARQUIVO .env.build (somente para o build)
-# Nunca copie .env real para a imagem
-COPY .env.build /app/.env.build
-
-# Carrega somente durante o build (para collectstatic)
-RUN export $(grep -v '^#' /app/.env.build | xargs) && \
-    rm /app/.env.build
-
-RUN printenv
-
-# Arquivo de dependências
+# Copia requirements.txt antes de instalar
 COPY requirements.txt .
 
 # Instala dependências Python
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia o resto do código
+# Copia o projeto após a instalação
 COPY . .
 
-# Coleta arquivos estáticos usando variáveis carregadas
+# Carrega .env.build de forma segura apenas durante o build para collectstatic
+RUN set -a && . /app/.env.build && set +a
+
+# Executa collectstatic sem necessidade de DB
 RUN python manage.py collectstatic --noinput
 
-# Torna entrypoint executável
-RUN chmod +x /app/entrypoint.sh
+# Torna entrypoint.sh executável
+RUN chmod +x entrypoint.sh
 
-# Porta interna
+# Expõe a porta 8000
 EXPOSE 8000
 
 # Inicia Gunicorn

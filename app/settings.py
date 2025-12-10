@@ -14,8 +14,6 @@ from pathlib import Path
 import os
 
 import dj_database_url
-from django.core.exceptions import ImproperlyConfigured
-from dotenv import load_dotenv
 
 
 def get_bool_env(name, default=False):
