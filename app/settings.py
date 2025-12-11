@@ -16,21 +16,21 @@ from pathlib import Path
 import dj_database_url
 
 
-def get_secret(secret_name, default_value=None):
-    """
-    Tenta ler o valor de um Docker Secret montado em /run/secrets/.
-    Se não encontrar, tenta ler da variável de ambiente (para desenvolvimento).
-    """
-    try:
-        # Caminho padrão onde o Docker monta o segredo
-        secret_path = f"/run/secrets/{secret_name}"
-        with open(secret_path, 'r') as f:
-            return f.read().strip()
-    except FileNotFoundError:
-        # Fallback para variável de ambiente se o arquivo não existir
-        return os.environ.get(secret_name, default_value)
+SECRET_KEY_PATH = ('secret_key','/run/secrets/secret_key')
+DATABASE_URL_PATH = ('database_url','/run/secrets/database_url')
 
-print(get_secret('secret_key'), get_secret('django_db_url'))
+secrets_path = [SECRET_KEY_PATH,DATABASE_URL_PATH]
+secrets = {}
+try:
+    for secret_path in secrets_path:
+        with open(secret_path[1], 'r') as f:
+             secrets[secret_path[0]] = f.read().strip()
+             print("Chave carregada com sucesso do Docker Secret.")
+except FileNotFoundError:
+    # Fallback: Se o arquivo não existir (por exemplo, em desenvolvimento local)
+    print("AVISO: Arquivo de secret não encontrado. Usando variável de ambiente ou fallback.")
+    SECRET_KEY = os.environ.get('secret_key', 'chave-insegura-de-desenvolvimento-local-7e2g8be')
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,7 +39,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_secret("secret_key")
+SECRET_KEY = secrets.get("secret_key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -126,7 +126,7 @@ DATABASES = {
     'default': {}
 }
 
-DATABASE_URL= get_secret("django_db_url")
+DATABASE_URL= secrets.get("database_url")
 
 if DATABASE_URL:
     DATABASES['default'] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
