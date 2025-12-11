@@ -46,8 +46,7 @@ services:
     networks:
       - alvesdevpynet
     depends_on:
-      bancodados:
-        condition: service_healthy  # Espera healthcheck passar
+      - bancodados
     deploy:
       mode: replicated
       replicas: 1
