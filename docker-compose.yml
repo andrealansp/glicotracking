@@ -2,10 +2,9 @@ services:
   bancodados:
     image: postgres:17.7
     restart: always
-    entrypoint: ["/entrypoint-postgres.sh"]  # Entry point customizado para ler secrets
+    entrypoint: ["/entrypoint-postgres.sh"]
     environment:
-      # Agora, vars reais serão setadas no entrypoint-postgres.sh
-      POSTGRES_DB: ${DB_NAME:-default}  # Fallback se não setado
+      POSTGRES_DB: ${DB_NAME:-default}
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
     secrets:
@@ -17,12 +16,12 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s  # Tempo para init com secrets
+      start_period: 30s
     networks:
       - alvesdevpynet
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./entrypoint-postgres.sh:/entrypoint-postgres.sh:ro  # Monte o script (crie localmente)
+      - ./entrypoint-postgres.sh:/entrypoint-postgres.sh:ro  # Script do Git, OK
     ports:
       - "5434:5432"
 
@@ -31,12 +30,11 @@ services:
     entrypoint: ["/app/entrypoint.sh"]
     command: ["gunicorn", "app.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]
     environment:
-      - secret_key=/run/secrets/secret_key  # Path para o entrypoint ler
+      - secret_key=/run/secrets/secret_key  # Path para entrypoint ler
       - database_url=/run/secrets/database_url
       - db_name=/run/secrets/db_name
       - db_password=/run/secrets/db_password
       - db_user=/run/secrets/db_user
-      # Vars extras para Django (setadas no entrypoint se precisar)
       - DEBUG=False
       - ALLOWED_HOSTS=glicotracking.alvesdevpy.com.br
     volumes:
@@ -46,7 +44,7 @@ services:
     networks:
       - alvesdevpynet
     depends_on:
-      - bancodados
+     - bancodados
     deploy:
       mode: replicated
       replicas: 1
@@ -81,14 +79,9 @@ networks:
     external: true
     driver: overlay
 
-secrets:
+secrets:  # <- APENAS NOMES, SEM file: – Portainer gerencia
   secret_key:
-    file: ./secret_key.txt
   database_url:
-    file: ./database_url.txt
   db_name:
-    file: ./db_name.txt
   db_password:
-    file: ./db_password.txt
   db_user:
-    file: ./db_user.txt
