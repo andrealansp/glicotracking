@@ -5,14 +5,6 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Load dos secrets
-RUN --mount=type=secret,id=db_name cat /run/secrets/db_name \
-    --mount=type=secret,id=db_password cat /run/secrets/db_password \
-    --mount=type=secret,id=db_user cat /run/secrets/db_user \
-    --mount=type=secret,id=django_db_url cat /run/secrets/django_db_url \
-    --mount=type=secret,id=secret_key cat /run/secrets/secret_key \
-
-
 # Instala dependências do sistema (incluindo PostgreSQL client para migrações)
 RUN apt-get update && apt-get install -y \
     postgresql-client \
