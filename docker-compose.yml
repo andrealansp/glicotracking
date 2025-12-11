@@ -2,7 +2,6 @@ services:
   bancodados:
     image: glicotracking-postgres:v1
     restart: always
-    entrypoint: ["/entrypoint-postgres.sh"]
     environment:
       POSTGRES_DB: ${DB_NAME:-default}
       POSTGRES_USER: ${DB_USER:-postgres}
