@@ -5,6 +5,9 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+RUN --mount=type=secret,id=secret_key \
+    --mount=type=secret,id=database_url
+
 # Instala dependências do sistema (incluindo PostgreSQL client para migrações)
 RUN apt-get update && apt-get install -y \
     postgresql-client \
