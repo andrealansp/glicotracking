@@ -1,6 +1,6 @@
 services:
   bancodados:
-    image: postgres:17.7
+    image: glicotracking-postgres:v1
     restart: always
     entrypoint: ["/entrypoint-postgres.sh"]
     environment:
@@ -21,7 +21,6 @@ services:
       - alvesdevpynet
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./entrypoint-postgres.sh:/entrypoint-postgres.sh:ro  # Script do Git, OK
     ports:
       - "5434:5432"
 
