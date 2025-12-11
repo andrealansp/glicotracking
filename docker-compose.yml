@@ -81,7 +81,12 @@ networks:
 
 secrets:  # <- APENAS NOMES, SEM file: – Portainer gerencia
   secret_key:
+    external: true
   database_url:
+    external: true
   db_name:
+    external: true
   db_password:
+    external: true
   db_user:
+    external: true
