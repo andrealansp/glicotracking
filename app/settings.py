@@ -10,45 +10,39 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
 
 import dj_database_url
 
-db_url_file = os.environ.get('DATABASE_URL')
-if db_url_file and os.path.exists(db_url_file):
-    with open(db_url_file, 'r') as f:
-        DATABASE_URL_GTK = f.read().strip()
-    DATABASE_URL = DATABASE_URL_GTK  # Ou use diretamente
-else:
-    DATABASE_URL = os.environ.get('DATABASE_URL', 'fallback_value')
 
-print(DATABASE_URL)
+def get_secret(secret_name, default_value=None):
+    """
+    Tenta ler o valor de um Docker Secret montado em /run/secrets/.
+    Se não encontrar, tenta ler da variável de ambiente (para desenvolvimento).
+    """
+    try:
+        # Caminho padrão onde o Docker monta o segredo
+        secret_path = f"/run/secrets/{secret_name}"
+        with open(secret_path, 'r') as f:
+            return f.read().strip()
+    except FileNotFoundError:
+        # Fallback para variável de ambiente se o arquivo não existir
+        return os.environ.get(secret_name, default_value)
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Similar para SECRET_KEY
-secret_key_file = os.environ.get('GTK_SECRET_KEY')
-print(secret_key_file)
-if secret_key_file and os.path.exists(secret_key_file):
-    with open(secret_key_file, 'r') as f:
-        SECRET_KEY = f.read().strip()
-
-def get_bool_env(name, default=False):
-    return str(os.getenv(name, str(default))).lower() in ("1", "true", "yes")
+print(get_secret('secret_key'), get_secret('django_db_url'))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = SECRET_KEY
+SECRET_KEY = get_secret("secret_key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = get_bool_env("DEBUG", default=False)
+DEBUG = False
 
 ALLOWED_HOSTS = ['glicotracking.alvesdevpy.com.br', "glicotracking.com.br", '127.0.0.1', 'localhost']
 CSRF_TRUSTED_ORIGINS = ["https://glicotracking.alvesdevpy.com.br",
@@ -132,6 +126,7 @@ DATABASES = {
     'default': {}
 }
 
+DATABASE_URL= get_secret("django_db_url")
 
 if DATABASE_URL:
     DATABASES['default'] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
@@ -167,7 +162,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -178,7 +172,6 @@ TIME_ZONE = "America/Sao_Paulo"
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
