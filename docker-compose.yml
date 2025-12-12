@@ -1,11 +1,16 @@
 services:
   bancodados:
-    image: glicotracking-postgres:v1
+    image: postgres:17.7-alpine
     restart: always
     environment:
-      POSTGRES_DB: ${DB_NAME:-default}
-      POSTGRES_USER: ${DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+      POSTGRES_DB_FILE: /run/secrets/db_name # Usa secret para nome do banco
+      POSTGRES_USER_FILE: /run/secrets/db_user     # Usa secret para usuário
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password  # Usa secret para senha
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U $$(cat /run/secrets/db_user) -d $$(cat /run/secrets/db_name)'" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     secrets:
       - db_user
       - db_name
@@ -18,7 +23,7 @@ services:
       - "5434:5432"
 
   web:
-    image: glicotracking:v2
+    image: glicotracking:v1
     entrypoint: ["/app/entrypoint.sh"]
     command: ["gunicorn", "app.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]
     environment:
