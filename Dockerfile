@@ -9,6 +9,10 @@ ENV PYTHONUNBUFFERED=1
 ENV PIP_DEFAULT_TIMEOUT=100
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 
+RUN --mount=type=secret,id=db_user \
+ export MY_SECRET=$(cat /run/secrets/db_user) && \
+ echo $db_user # would output "foo".
+
 # Instala dependências do sistema (apenas essenciais; removeu vim e gcc desnecessários)
 RUN apt-get update && apt-get install -y \
     postgresql-client \
