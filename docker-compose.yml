@@ -24,7 +24,7 @@ services:
       - "5434:5432"
 
   web:
-    image: glicotracking:v1
+    image: glicotracking:v2
     entrypoint: ["/app/entrypoint.sh"]
     command: ["gunicorn", "app.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]
     environment:
