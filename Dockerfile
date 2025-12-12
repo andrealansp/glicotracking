@@ -10,10 +10,10 @@ ENV PIP_DEFAULT_TIMEOUT=100
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 
 RUN --mount=type=secret,id=secret_key \
- export secret_key=$(cat /run/secrets/secret_key) \
+ SECRET_KEY_FILE=/run/secrets/secret_key
 
 RUN --mount=type=secret,id=database_url \
- export database_url=$(cat /run/secrets/database_url)
+ DATABASE_URL_FILE=/run/secrets/database_url
 
 # Instala dependências do sistema (apenas essenciais; removeu vim e gcc desnecessários)
 RUN apt-get update && apt-get install -y \
