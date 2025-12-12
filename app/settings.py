@@ -21,10 +21,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-print(os.environ.get("DATABASE_URL"))
+# Função auxiliar para ler os secrets docker e tornar disponíveis para o django.
+def get_secret(secret_name):
+    """
+    Get the secret value either from a file (Docker secret) or environment variable.
+    """
+    try:
+        # Try reading from Docker secrets file path
+        with open(f"/run/secrets/{secret_name}", 'r') as f:
+            return f.read().strip()
+    except IOError:
+        # Fallback to environment variable
+        return os.environ.get(secret_name)
+
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = get_secret("secret_key")
+ALLOWED_HOSTS = ['*']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -111,7 +124,7 @@ DATABASES = {
     'default': {}
 }
 
-DATABASE_URL= os.environ.get("DATABASE_URL")
+DATABASE_URL= get_secret("database_url")
 
 if DATABASE_URL:
     DATABASES['default'] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
