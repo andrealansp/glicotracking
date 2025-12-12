@@ -10,7 +10,7 @@ RUN --mount=type=secret,id=db_user \
 RUN --mount=type=secret,id=db_password \
  DB_PASSWORD=/run/secrets/db_password
 
-RUN cp ./entrypoint-postgres.sh /usr/local/bin/entrypoint-postgres.sh
+RUN cp /root/glicotracking/entrypoint-postgres.sh /usr/local/bin/entrypoint-postgres.sh
 
 # Define como entrypoint principal (substitui o oficial)
 ENTRYPOINT ["/usr/local/bin/entrypoint-postgres.sh"]
