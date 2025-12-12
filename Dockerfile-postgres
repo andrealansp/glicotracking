@@ -1,9 +1,17 @@
 # Dockerfile para Postgres custom com entrypoint embutido
 FROM postgres:17.7
 
-# Copia o entrypoint customizado
-COPY entrypoint-postgres.sh /usr/local/bin/entrypoint-postgres.sh
-RUN chmod +x /usr/local/bin/entrypoint-postgres.sh
+RUN --mount=type=secret,id=db_name \
+ export db_name=$(cat /run/secrets/db_name) \
+
+RUN --mount=type=secret,id=database_url \
+ export db_user=$(cat /run/secrets/db_user)
+
+RUN --mount=type=secret,id=database_url \
+ export db_password=$(cat /run/secrets/db_password)
+
+
+
 
 # Define como entrypoint principal (substitui o oficial)
 ENTRYPOINT ["/usr/local/bin/entrypoint-postgres.sh"]
