@@ -1,0 +1,83 @@
+{
+  "name": "Disponibilidade",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "BotRegional",
+        "remoteJid": "120363038557730452@g.us",
+        "messageText": "={{ $json.body.mensagem}}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        624,
+        -64
+      ],
+      "id": "903a810a-ea77-4793-abf7-256c9c818e3b",
+      "name": "Enviar texto",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "evolutionApi": {
+          "id": "MHuakCIA5ZkPp9mt",
+          "name": "BOT-REGIONAL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "disponibilidade",
+        "authentication": "basicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        320,
+        -64
+      ],
+      "id": "0db98499-8e5c-4ac8-b499-6f9a870cc6d7",
+      "name": "Webhook",
+      "webhookId": "1812c1bb-3a48-49cc-9ea5-4c145b7b5433",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "uG7wipGlXdzWfthF",
+          "name": "TESTES_INICIAIS"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Enviar texto": {
+      "main": [
+        []
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Enviar texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "84c1cba3-0a45-4638-9c0e-c7513e665b6b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "adb31ab07ac68f633ea75d5fd07458c950dba0d60e971da330e6f9462628bd4d"
+  },
+  "id": "vKMQrrb9x3ujPtUA",
+  "tags": []
+}
