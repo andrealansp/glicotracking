@@ -40,6 +40,7 @@ class CreateExameView(LoginRequiredMixin, View):
             perfil = Perfil.objects.get(user=self.request.user)
             form.instance.perfil = perfil
             form.save()
+            return redirect(self.success_url)
         else:
             return render(request, self.template_name, {'form': form})
 
