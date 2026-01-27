@@ -39,13 +39,11 @@ def get_secret(secret_name):
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-default-key")
-ALLOWED_HOSTS = ['*']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-#ALLOWED_HOSTS = ["*"]
-ALLOWED_HOSTS = ['glicotracking.alvesdevpy.com.br', "glicotracking.com.br", '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['glicotracking.alvesdevpy.com.br', "glicotracking.com.br"]
 CSRF_TRUSTED_ORIGINS = ["https://glicotracking.alvesdevpy.com.br",
                         "http://www.glicotracking.alvesdevpy.com.br",
                         "https://glicotracking.com.br",
