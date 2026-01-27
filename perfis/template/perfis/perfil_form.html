@@ -3,10 +3,20 @@
 {% block content %}
 
 <div class="row m-3">
+    {% if perfil.primeiro_login_completo %}
     <div class="col-12 col-sm-12 col-md-12 col-lg-12 bg p-3">
         <a class="btn btn-sm btn-warning" href="{% url 'perfis:perfil' slug=perfil.slug %}" type="button"><i
                 class="bi bi-arrow-left-circle"></i> Retornar</a>
     </div>
+    {% else %}
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12 bg p-3">
+        <h2>Favor completar as informações do seu perfil</h2>
+        <p>Quando você cria o seu perfil e fornece informações pessoais e de saúde, está a construir a
+            base para um sistema inteligente que vai muito além de um simples registro.
+            Cada dado inserido é uma peça fundamental para cálculos e outras ações tomadas pelo sistema.</p>
+        <p>Observação importante, não compartilhamos seus dados com terceiros.</p>
+    </div>
+    {% endif %}
 </div>
 <div class="row m-3 ">
     <div class="col-12 col-sm-12 col-md-12 col-lg-12 p-3 bg">

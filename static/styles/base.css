@@ -50,7 +50,7 @@ font-size: small;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
 .b-enfase{
-    border-bottom: solid 3px var(--glico-accent);
+    border-bottom: solid 3px var(--glico-primary);
 }
 
 .bottom-border-menu{
@@ -84,7 +84,50 @@ font-size: small;
     overflow-x: auto;  /* Scroll horizontal para muitos pontos */
     max-width: 100%;
 }
-.graficos{
-height: 40vh;
-width: auto;
+/* Altura base para .graficos (sem media query, aplica em xs por default) */
+.graficos {
+    height: 30vh;  /* Baixa para mobiles: prioriza legibilidade sem scroll */
+    width: auto;
+    max-height: 40vh;  /* Limite para evitar overflow em telas pequenas */
+}
+
+/* sm: Mobile médio (≥576px) - Aumenta um pouco para tablets portrait */
+@media (min-width: 576px) {
+    .graficos {
+        height: 35vh;
+        max-height: 45vh;
+    }
+}
+
+/* md: Tablet (≥768px) - Equilíbrio para orientação landscape */
+@media (min-width: 768px) {
+    .graficos {
+        height: 38vh;
+        max-height: none;  /* Remove limite em tablets+ */
+    }
+}
+
+/* lg: Desktop pequeno (≥992px) - Seu valor original, otimizado */
+@media (min-width: 992px) {
+    .graficos {
+        height: 40vh;
+        width: auto;
+    }
+}
+
+/* xl: Desktop médio (≥1200px) - Ajuste do seu 1500px para fluidez */
+@media (min-width: 1200px) {
+    .graficos {
+        height: 45vh;
+        aspect-ratio: 16/9;  /* Proporção fixa para gráficos harmoniosos */
+    }
+}
+
+/* xxl: Desktop grande (≥1400px) - Para monitores large, sem exagerar */
+@media (min-width: 1400px) {
+    .graficos {
+        height: 50vh;  /* Aumenta para telas maiores, mas controlado vs. seu 65vh */
+        width:100%;
+        aspect-ratio: 16/9;  /* Proporção fixa para gráficos harmoniosos */
+    }
 }

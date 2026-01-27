@@ -12,8 +12,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
-
+from dotenv import load_dotenv
 import dj_database_url
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,33 +38,34 @@ def get_secret(secret_name):
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_secret("secret_key")
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-default-key")
 ALLOWED_HOSTS = ['*']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['glicotracking.alvesdevpy.com.br', "glicotracking.com.br", '127.0.0.1', 'localhost']
-CSRF_TRUSTED_ORIGINS = ["https://glicotracking.alvesdevpy.com.br",
-                        "http://www.glicotracking.alvesdevpy.com.br",
-                        "https://glicotracking.com.br",
-                        "http://glicotracking.com.br"]
-
-# Reconhecer HTTPS por trás do Traefik
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-USE_X_FORWARDED_HOST = True
-
-# Cookies seguros em produção
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-
-# Recomendado
-SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
+ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS = ['glicotracking.alvesdevpy.com.br', "glicotracking.com.br", '127.0.0.1', 'localhost']
+# CSRF_TRUSTED_ORIGINS = ["https://glicotracking.alvesdevpy.com.br",
+#                         "http://www.glicotracking.alvesdevpy.com.br",
+#                         "https://glicotracking.com.br",
+#                         "http://glicotracking.com.br"]
+#
+# # Reconhecer HTTPS por trás do Traefik
+# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# USE_X_FORWARDED_HOST = True
+#
+# # Cookies seguros em produção
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+#
+# # Recomendado
+# SECURE_HSTS_SECONDS = 31536000
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
+# SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+# SECURE_BROWSER_XSS_FILTER = True
+# SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # Application definition
 
@@ -74,12 +77,13 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "core",
+    "contas",
     "django_bootstrap5",
-    'tinymce',
-    'medicoes',
-    'perfis',
+    "tinymce",
+    "medicoes",
+    "perfis",
     "planos",
-    'exames',
+    "exames",
 ]
 
 MIDDLEWARE = [
@@ -104,6 +108,7 @@ TEMPLATES = [
                  "perfis/template",
                  "core/template",
                  "planos/template",
+                 "contas/template"
                  ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -124,7 +129,7 @@ DATABASES = {
     'default': {}
 }
 
-DATABASE_URL= get_secret("database_url")
+DATABASE_URL= ""
 
 if DATABASE_URL:
     DATABASES['default'] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
@@ -171,6 +176,16 @@ USE_I18N = True
 
 USE_TZ = True
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.hostinger.com'
+EMAIL_PORT = 465 # Use 465 for SSL or 587 for TLS
+EMAIL_USE_SSL = True # Set to True for port 465, False for port 587
+EMAIL_USE_TLS = False # Set to True for port 587, False for port 465
+EMAIL_HOST_USER = os.getenv("EMAIL") # Replace with your email
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_SENHA") # Replace with your email password
+DEFAULT_FROM_EMAIL = os.getenv("EMAIL") # The default sender email
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
@@ -187,9 +202,9 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-LOGIN_URL = "login"
+LOGIN_URL = "/contas/login"
 LOGIN_REDIRECT_URL = "/core/dashboard"
-LOGOUT_REDIRECT_URL = "/login"
+LOGOUT_REDIRECT_URL = "/contas/login"
 
 LOGGING = {
     'version': 1,

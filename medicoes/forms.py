@@ -14,7 +14,7 @@ class MedicaoForm(forms.ModelForm):
                   'observacoes',
                   'exame']
         widgets = {
-            'data_medicao': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'data_medicao': forms.DateTimeInput(format='%Y-%m-%dT%H:%M',attrs={'type': 'datetime-local'}),
         }
 
 class MedicaoFilterForm(forms.Form):

@@ -11,8 +11,6 @@ from medicoes.serializers import MedicaoSerializer
 from rest_framework import generics
 
 
-
-
 class MedicoesListView(LoginRequiredMixin, ListView):
     template_name_suffix = "_listar"
     model = Medicao
@@ -35,7 +33,6 @@ class MedicoesListView(LoginRequiredMixin, ListView):
 
         return instancia
 
-
 class MedicoesCreateView(LoginRequiredMixin, CreateView):
     model = Medicao
     form_class = MedicaoForm
@@ -45,7 +42,6 @@ class MedicoesCreateView(LoginRequiredMixin, CreateView):
         perfil = Perfil.objects.get(user=self.request.user)
         form.instance.perfil = perfil
         return super().form_valid(form)
-
 
 class MedicoesUpdateView(LoginRequiredMixin, UpdateView):
     model = Medicao
@@ -57,12 +53,10 @@ class MedicoesUpdateView(LoginRequiredMixin, UpdateView):
         form.instance.perfil = perfil
         return super().form_valid(form)
 
-
 class MedicoesDeleteView(LoginRequiredMixin, DeleteView):
     model = Medicao
     queryset = Medicao.objects.all()
     success_url = reverse_lazy("medicoes:lista")
-
 
 class RelatoriosListView(LoginRequiredMixin, ListView):
     template = "medicao_relatorio.html"

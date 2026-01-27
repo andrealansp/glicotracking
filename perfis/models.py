@@ -1,9 +1,15 @@
 import datetime
+import logging
+import os
+
 from datetime import timedelta
 
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.text import slugify
+
+
+logger = logging.getLogger('django')
 
 
 def add_tempo():
@@ -77,13 +83,13 @@ class HistoricoPesoImc(models.Model):
     def get_grau_obesidade(imc):
         if imc < 18.5:
             return 'Abaixo do peso'
-        elif 18.5 <= imc < 24.9:
+        elif 18.50 <= imc < 24.99:
             return 'Peso normal'
-        elif 25.9 <= imc < 29.9:
+        elif 25.99 <= imc < 29.99:
             return 'Sobrepeso'
-        elif 30 <= imc < 34.9:
+        elif 30 <= imc < 34.99:
             return 'Obesidade grau I'
-        elif 35 <= imc < 39.9:
+        elif 35 <= imc < 39.99:
             return 'Obesidade grau II'
         elif imc >= 40.0:
             return 'Obesidade grau III'
@@ -115,3 +121,19 @@ class HistoricoBioTipo(models.Model):
     def __str__(self):
         return f"Cintura: {self.cintura} - Quadril: {self.quadril}"
 
+    @property
+    def fotos_list(self):
+        """Retorna todas as fotos do produto"""
+        return self.fotos.all()
+
+class HistoricoBioTipoFotos(models.Model):
+
+    historicobiotipo = models.ForeignKey(HistoricoBioTipo, on_delete=models.CASCADE, related_name='fotos')
+    foto = models.ImageField("Foto do Corpo", upload_to="fotos", null=True, blank=True, help_text="Anexo fotos corporais para comparação")
+
+    class Meta:
+        ordering = ["-historicobiotipo"]
+        verbose_name = "Historico Biotipo Foto"
+
+    def __str__(self):
+        return f"Foto de {self.historicobiotipo.data_registro}"

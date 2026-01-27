@@ -4,6 +4,7 @@ from exames.models import Exame
 class ExameForm(forms.ModelForm):
     data_exame = forms.DateField(
         widget=forms.DateInput(
+            format='%Y-%m-%d',
             attrs={
                 'type': 'date',
                 'class': 'form-control'

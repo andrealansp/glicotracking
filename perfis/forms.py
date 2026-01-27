@@ -2,8 +2,7 @@ from django.contrib.auth.models import User
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
-from perfis.models import Perfil, HistoricoPesoImc, HistoricoBioTipo
-
+from perfis.models import Perfil, HistoricoPesoImc, HistoricoBioTipo, HistoricoBioTipoFotos
 
 class RegistroForm(UserCreationForm):
 
@@ -38,6 +37,7 @@ class PerfilUpdateForm(forms.ModelForm):
     class Meta:
         model = Perfil
         fields = "__all__"
+        exclude = ('primeiro_login_completo','user')
 
 class HistoricoPesoImcForm(forms.ModelForm):
     class Meta:
@@ -47,4 +47,12 @@ class HistoricoPesoImcForm(forms.ModelForm):
 class HistoricoBiotipoForm(forms.ModelForm):
     class Meta:
         model = HistoricoBioTipo
-        fields = ['cintura','quadril','braco','perna',"abdomen"]
+        fields = ['cintura','quadril','braco','perna','abdomen']
+
+    fotos = forms.ImageField(required=False)
+
+
+class HistoricoBiotipoFotoForm(forms.ModelForm):
+    class Meta:
+        model: HistoricoBioTipoFotos
+        fields = ['foto']

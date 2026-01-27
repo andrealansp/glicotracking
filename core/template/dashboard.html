@@ -48,7 +48,7 @@
 
 
 <!-- Gráfico de Glicose -->
-<div class="row justify-content-around m-3 ">
+<div class="row m-3 ">
     <div class="col-sm-12 col-md-12 col-12 ">
         <div class="card bg overflow-auto">
             <div class="card-body">
@@ -60,20 +60,41 @@
     </div>
 </div>
 
-<div class="row justify-content-around m-3">
+<div class="row m-3 ">
+    <div class="col-sm-6 col-md-6 col-6 ">
+        <div class="card bg overflow-auto">
+            <div class="card-body">
+                <div id="graficojejum" class="graficos">
+                    <canvas id="jejumChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md-6 col-6 ">
+        <div class="card bg overflow-auto">
+            <div class="card-body">
+                <div id="graficoaleatorias" class="graficos">
+                    <canvas id="aleatoriasChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row m-3">
     <div class="col-sm-12 col-md-12 col-12 col-lg-6 mb-3">
         <div class="card bg">
-            <div class="card-body overflow-auto">
-                <div class="graficos">
-                <canvas id="graficoPesoImc"></canvas>
+            <div class="card-body">
+                <div class="graficos m-auto">
+                    <canvas id="graficoPesoImc"></canvas>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-12 col-sm-12 col-md-12 col-lg-6 mb-3">
         <div class="card bg">
-            <div class="card-body overflow-auto">
-                <div class="graficos">
+            <div class="card-body">
+                <div class="graficos m-auto">
                     <canvas id="graficoBiotipo"></canvas>
                 </div>
             </div>
@@ -83,14 +104,18 @@
 
 <script>
     Chart.register(ChartDataLabels);
-
-    const legenda = JSON.parse('{{ dados_grafico.legendas|safe }}');
-    const dados = JSON.parse('{{ dados_grafico.dados|safe }}');
-    const tipo = JSON.parse('{{ dados_grafico.tipo|safe }}');
+    // Parse dos dados do Django (inalterado)
+    const legendaOriginal = JSON.parse('{{ dados_grafico.legendas|escapejs }}');
+    const dadosOriginal = JSON.parse('{{ dados_grafico.dados|escapejs }}');
+    const tiposOriginal = JSON.parse('{{ dados_grafico.tipo|escapejs }}');
     const historicoPesoImcData = JSON.parse('{{ historico_peso_imc|escapejs }}');
     const historicoBiotipoData = JSON.parse('{{ historico_biotipo|escapejs }}');
+    const legenda = legendaOriginal.reverse();
+    const dados = dadosOriginal.reverse();
+    const tipos = tiposOriginal.reverse();
 
 
+    // Ajusta o tamanho do gráfico conforme a quantidade de dados
     if (dados.length > 30) {
         grafico = document.getElementById("areadografico");
         grafico.style.width = "150vw";
@@ -145,65 +170,259 @@
 
     // 2. Configuração do Gráfico
     const ctxGlicose = document.getElementById('glicoseChart').getContext('2d');
+    const coresbarras = {
+        'jejum': '#FFC107',  // Amarelo dourado
+        'aleatoria': '#007BFF',  // Azul
+        'pos_pandrial_2h': '#28A745',  // Verde
+        'pos_prandial_1h': '#FD7E14',  // Laranja
+        'pre_prandial': '#DC3545',  // Vermelho
+    };
+    const coresBarras = tipos.map(tipo => coresbarras[tipo]);
+    const uniqueTypes = [...new Set(tipos)];
 
     new Chart(ctxGlicose, {
-        type: 'line',
+        type: 'bar',
         data: {
-            labels: legenda.reverse(), // Suas variáveis
+            labels: legenda,
             datasets: [{
+                fill: true,
                 label: 'Glicose (Últimos 30 dias)',
-                data: dados.reverse(), // Suas variáveis
-                borderColor: 'rgb(127, 255, 0)',
-                backgroundColor: 'rgb(127, 255, 0)', // Necessário para o datalabels usar a cor
-                tension: 0.1,
-                pointRadius: 3, // Tamanho da bolinha
+                data: dados,
+                tipos: tipos,
+                borderColor: coresBarras.map(cor => cor + '80'),
+                backgroundColor: coresBarras,
+                borderWidth: 1,
+                borderRadius: 4,
+                barPercentage: 0.5,
+                categoryPercentage: 0.8
             }]
         },
-        // 3. REGISTRO DOS PLUGINS (Aqui é a mudança principal)
         plugins: [ChartDataLabels, horizontalLinesPlugin],
         options: {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
                 y: {
-                    // Sugestão: Definir um min/max sugerido para as linhas sempre aparecerem
                     suggestedMin: 50,
-                    suggestedMax: 200
+                    suggestedMax: 200,
                 }
             },
             plugins: {
-                // Configuração do Plugin DataLabels
+                tooltip: {
+                    enabled: true,
+                    backgroundColor: 'black',
+                    titleColor: 'white',
+                    bodyColor: 'white',
+                    borderColor: 'rgba(0, 0, 0, 0.8)',
+                    borderWidth: 1,
+                    cornerRadius: 6,
+                    displayColors: false,
+                    callbacks: {
+                        title: function (context) {
+                            return `Data: ${context[0].label}`;
+                        },
+                        label: function (context) {
+                            const valor = Math.round(context.parsed.y);
+                            return `Glicose: ${valor} mg/dL`;
+                        },
+                        afterLabel: function (context) {
+                            const tipo = context.dataset.tipos[context.dataIndex] || 'Desconhecido';
+                            return `Tipo: ${tipo.toUpperCase()}`;
+                        }
+                    }
+                },
                 datalabels: {
-                    align: 'end',
+                    align: 'top',
                     anchor: 'end',
-                    backgroundColor: function (context) {
-                        return context.dataset.borderColor;
-                    },
+                    textAlign: 'center',
+                    backgroundColor: coresBarras.map(cor => cor + '80'),
                     borderRadius: 4,
                     color: 'black',
                     font: {
                         weight: 'bold',
-                        size: 11
+                        size: 11,
+                        lineHeight: 1.4
                     },
-                    padding: 4,
-                    offset: 4,
-                    formatter: function (value) {
-                        return Math.round(value); // Arredonda o valor
+                    padding: 8,
+                    offset: 12,
+                    formatter: function (value, context) {
+                        const tipo = context.dataset.tipos ? context.dataset.tipos[context.dataIndex] : 'Desconhecido';
+                        const valorArredondado = Math.round(value);
+                        return `${valorArredondado}`;  // Valor em cima, tipo centralizado abaixo
                     }
                 },
                 title: {
                     display: true,
-                    text: 'Monitoramento de Glicose',
+                    text: 'Monitoramento de Glicose (Últimos 30 Dias)',
                     font: { size: 16 }
                 },
                 legend: {
-                    display: true // Mostra a legenda do dataset
+                    labels: {
+                        generateLabels: function (chart) {
+                            const datasets = chart.data.datasets;
+                            if (datasets.length > 0) {
+                                const tiposUnicos = [...new Set(datasets[0].tipos)];
+                                return tiposUnicos.map(tipo => {
+                                    const cor = coresbarras[tipo] || '#000000';
+                                    return {
+                                        text: tipo.charAt(0).toUpperCase() + tipo.slice(1).replace('_', ' '),
+                                        fillStyle: cor,
+                                        strokeStyle: cor,
+                                        lineWidth: 1
+                                    };
+                                });
+                            }
+                        }
+                    }
                 }
             }
         }
     });
-    const dados_labels = historicoPesoImcData.map(item => new Date(item.data_registro).toLocaleDateString());
 
+
+    const dadosJejum = dadosOriginal.filter((_, index) => tiposOriginal[index] === 'jejum').reverse();
+    const legendaJejum = legendaOriginal.filter((_, index) => tiposOriginal[index] === 'jejum').reverse();
+
+    // Gráfico Jejum
+    const ctxJejum = document.getElementById('jejumChart').getContext('2d');
+    const jejumChart = new Chart(ctxJejum, {
+        type: 'line',
+        data: {
+            labels: legendaJejum,
+            datasets: [{
+                label: 'Glicose em Jejum (mg/dL) (últimos 30 dias)',
+                data: dadosJejum,
+                borderColor: 'rgba(255, 193, 7, 1)',
+                backgroundColor: 'rgba(255, 193, 7, 0.3)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 5,
+                pointBackgroundColor: 'rgba(255, 193, 7, 1)',
+                pointBorderColor: 'rgba(255, 193, 7, 1)',
+                pointBorderWidth: 1
+            }]
+        },
+        plugins: [ChartDataLabels],
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Glicose em Jejum',
+                    font: { size: 16 }
+                },
+                datalabels: {
+                    align: 'top',
+                    anchor: 'end',
+                    textAlign: 'center',
+                    backgroundColor: '#FFC107',
+                    borderRadius: 4,
+                    color: 'black',
+                    font: {
+                        weight: 'bold',
+                        size: 11,
+                        lineHeight: 1.4
+                    },
+                    padding: 8,
+                    offset: 12,
+                    formatter: function (value, context) {
+                        const tipo = context.dataset.tipos ? context.dataset.tipos[context.dataIndex] : 'Desconhecido';
+                        const valorArredondado = Math.round(value);
+                        return `${valorArredondado}`;  // Valor em cima, tipo centralizado abaixo
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Glicose em Jejum (Últimos 30 Dias)',
+                    font: { size: 16 }
+                },
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    suggestedMin: 50,
+                    suggestedMax: 200
+                }
+            }
+        }
+    })
+
+
+    const dadosaletorios = dadosOriginal.filter((_, index) => tiposOriginal[index] === 'aleatoria').reverse();
+    const legendaaleatorios = legendaOriginal.filter((_, index) => tiposOriginal[index] === 'aleatoria').reverse();
+
+    const ctxAleatorias = document.getElementById('aleatoriasChart').getContext('2d');
+    const aleatoriasChart = new Chart(ctxAleatorias, {
+        type: 'line',
+        data: {
+            labels: legendaaleatorios,
+            datasets: [{
+                label: 'Medições Aleatórias(mg/dL) (últimos 30 dias)',
+                data: dadosaletorios,
+                borderColor: '#007BFF',
+                backgroundColor: 'rgba(0, 123, 255, 0.3)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 5,
+                pointBackgroundColor: '#007BFF',
+                pointBorderColor: '#007BFF',
+                pointBorderWidth: 1
+            }]
+        },
+        plugins: [ChartDataLabels],
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Glicose em Jejum',
+                    font: { size: 16 }
+                },
+                datalabels: {
+                    align: 'top',
+                    anchor: 'end',
+                    textAlign: 'center',
+                    backgroundColor: '#007BFF',
+                    borderRadius: 4,
+                    color: 'black',
+                    font: {
+                        weight: 'bold',
+                        size: 11,
+                        lineHeight: 1.4
+                    },
+                    padding: 8,
+                    offset: 12,
+                    formatter: function (value, context) {
+                        const tipo = context.dataset.tipos ? context.dataset.tipos[context.dataIndex] : 'Desconhecido';
+                        const valorArredondado = Math.round(value);
+                        return `${valorArredondado}`;  // Valor em cima, tipo centralizado abaixo
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Medidas Aleatórias (Últimos 30 Dias)',
+                    font: { size: 16 }
+                },
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    suggestedMin: 50,
+                    suggestedMax: 200
+                }
+            }
+        }
+
+    })
+
+
+    const dados_labels = historicoPesoImcData.map(item => new Date(item.data_registro).toLocaleDateString());
     const dados_peso_ideal = Array(dados_labels.length).fill({{ peso_ideal }});
 
     // Gráfico de barras agrupadas com peso e IMC
@@ -219,8 +438,7 @@
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
                 yAxisID: 'y-peso',
-                categoryPercentage: 0.5,
-                tension:0.3,
+                categoryPercentage: 0.5, tension: 0.3,
                 datalabels: {
                     align: 'top',
                     anchor: 'end',
@@ -265,17 +483,17 @@
                 yAxisID: 'y-peso',
                 fill: false,
                 tension: 0.1,
-                spanGaps: true, // Garante que a linha conecte pontos mesmo com gaps nos dados
-                pointRadius: 3, // Pontos visíveis para ênfase (ajuste se preferir sem pontos: 0)
+                spanGaps: true,
+                pointRadius: 3,
                 pointBackgroundColor: 'rgba(0, 0, 192, 1)',
                 pointBorderColor: 'rgba(0, 0, 192, 1)',
                 pointBorderWidth: 1,
-                order: 3 // Força a linha a ser desenhada por último (acima das barras)
+                order: 3
             }]
         },
         options: {
             responsive: true,
-            mantainAspectRatio:true,
+            maintainAspectRatio: true,
             plugins: {
                 title: {
                     display: true,
@@ -449,7 +667,7 @@
         },
         options: {
             responsive: true,
-             mantainAspectRatio:true,
+            mantainAspectRatio: true,
             scales: {
                 y: {
                     min: 0,

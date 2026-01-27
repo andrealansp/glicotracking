@@ -8,32 +8,33 @@ from django.views.generic import RedirectView
 from django.contrib.auth import views as auth_views
 from perfis.views import CustomLoginView
 
+
 def custom_404(request, exception):
-    return render(request, '404.html', status=404)
+    return render(request, "404.html", status=404)
+
 
 def custom_500(request):
-    return render(request, '500.html', status=500)
+    return render(request, "500.html", status=500)
+
 
 handler404 = custom_404
 handler500 = custom_500
 
-
 urlpatterns = [
-    path(
-        "", RedirectView.as_view(url="/login", permanent=False), name="index"
-    ),
-    path('tinymce/', include('tinymce.urls')),
     path("admin/", admin.site.urls),
-    path("login/", CustomLoginView.as_view(), name='login'),
-    path("logout", auth_views.LogoutView.as_view(), name="logout"),
+    path(
+        "", RedirectView.as_view(url="/contas/login", permanent=False), name="index"
+    ),
+    path("contas/", include("contas.urls")),
+    path("exames/", include("exames.urls")),
+    path("perfis/", include("perfis.urls")),
+    path("tinymce/", include("tinymce.urls")),
     path("core/", include("core.urls")),
     path("medicoes/", include("medicoes.urls")),
     path("planos/", include("planos.urls")),
-    path("exames/", include("exames.urls")),
-    path("perfis/", include("perfis.urls")),
-    path('health/', lambda request: HttpResponse('OK'), name='health_check'),
-    path("404/",custom_404, name='404' ),
-    path("500/",custom_500, name='500' ),
+    path("404/", custom_404, name="404"),
+    path("500/", custom_500, name="500"),
+    path("health/", lambda request: HttpResponse("OK"), name="health_check"),
 ]
 
 if settings.DEBUG:

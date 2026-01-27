@@ -1,8 +1,12 @@
+from datetime import date
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
+from django.core.mail import send_mail
+from django.conf import settings
 
 from exames.forms import ExameForm
 from exames.models import Exame
@@ -36,7 +40,6 @@ class CreateExameView(LoginRequiredMixin, View):
             perfil = Perfil.objects.get(user=self.request.user)
             form.instance.perfil = perfil
             form.save()
-            return redirect(self.success_url)
         else:
             return render(request, self.template_name, {'form': form})
 

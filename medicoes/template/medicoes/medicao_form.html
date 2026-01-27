@@ -14,7 +14,25 @@
         <div class="col-12">
             <form method="post" class="form mt-3">
                 {% csrf_token %}
-                {% bootstrap_form form %}
+                <div class="row">
+                    <div class="col-sm-12 col-lg-3 col-md-3">
+                        {% bootstrap_field form.valor_glicose %}
+                    </div>
+                    <div class="col-sm-12 col-lg-3 col-md-3">
+                        {% bootstrap_field form.tipo_medicao %}
+                    </div>
+                    <div class="col-sm-12 col-lg-3 col-md-3">
+                        {% bootstrap_field form.data_medicao %}
+                    </div>
+                    <div class="col-sm-12 col-lg-3 col-md-3">
+                        {% bootstrap_field form.exame %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-lg-12 col-md-12">
+                        {% bootstrap_field form.observacoes %}
+                    </div>
+                </div>
                 {% bootstrap_button button_type="submit" content="OK" %}
             </form>
         </div>

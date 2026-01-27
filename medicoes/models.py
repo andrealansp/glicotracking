@@ -22,7 +22,7 @@ class Medicao(models.Model):
 
 
     def __str__(self):
-        return f"{self.valor_glicose} mg/dL em {self.data_medicao.strftime('%d/%m/%Y %H:%M')}"
+        return f"{self.valor_glicose} mg/dL em {self.data_medicao.strftime('%d/%m %H:%M')}"
 
     class Meta:
         app_label = 'medicoes'

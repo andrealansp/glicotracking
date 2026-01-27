@@ -29,13 +29,13 @@ class RelatorioMedicoesView(TemplateView):
         # --- Dados para o gráfico de peso e IMC ---
         historico_peso_imc = HistoricoPesoImc.objects.filter(perfil=perfil).order_by('data_registro')
         historico_peso_imc_lista = [
-            {'data_registro': item.data_registro.isoformat(),
+            {'data_registro': item.data_registro,
              'peso': str(item.peso),
              'imc': str(item.imc)} for item in historico_peso_imc]
 
         historico_biotipo = HistoricoBioTipo.objects.filter(perfil=perfil).order_by('data_registro')
         historico_biotipo_lista = [{
-            "data_registro": item.data_registro.isoformat(),
+            "data_registro": item.data_registro,
             "cintura": item.cintura,
             "quadril": item.quadril,
             "braço": item.braco,

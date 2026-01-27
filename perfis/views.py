@@ -8,7 +8,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
 from perfis.forms import RegistroForm, PerfilUpdateForm, HistoricoPesoImcForm, HistoricoBiotipoForm
-from perfis.models import Perfil, HistoricoPesoImc, HistoricoBioTipo
+from perfis.models import Perfil, HistoricoPesoImc, HistoricoBioTipo, HistoricoBioTipoFotos
 
 
 class CustomLoginView(LoginView):
@@ -34,7 +34,7 @@ class PerfilRegisterView(CreateView):
             sexo=form.cleaned_data['sexo'],
         )
         messages.success(self.request,"Usuário cadastrado com sucesso!")
-        return HttpResponseRedirect(reverse('login'))
+        return HttpResponseRedirect(reverse('contas/login'))
 
     def form_invalid(self, form):
         return super().form_invalid(form)
@@ -136,12 +136,6 @@ class PerfilBiotipoListView(LoginRequiredMixin, ListView):
         return instancia
 
 
-class PerfilBiotipoUpdateView(LoginRequiredMixin, UpdateView):
-    model = HistoricoBioTipo
-    fields = "__all__"
-    success_url = reverse_lazy("perfis:biotipo_lista")
-
-
 class PerfilBiotipoCreateView(LoginRequiredMixin, CreateView):
     model = HistoricoBioTipo
     form_class = HistoricoBiotipoForm
@@ -150,6 +144,32 @@ class PerfilBiotipoCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         perfil = Perfil.objects.get(user=self.request.user)
         form.instance.perfil = perfil
+        biotipo = form.save()
+        fotos = self.request.FILES.getlist('fotos')
+        for foto in fotos:
+            HistoricoBioTipoFotos.objects.create(
+                historicobiotipo=biotipo,
+                foto=foto,
+            )
+        return super().form_valid(form)
+
+
+class PerfilBiotipoUpdateView(LoginRequiredMixin, UpdateView):
+    model = HistoricoBioTipo
+    form_class = HistoricoBiotipoForm
+    success_url = reverse_lazy("perfis:biotipo_lista")
+
+    def form_valid(self, form):
+        perfil = Perfil.objects.get(user=self.request.user)
+        form.instance.perfil = perfil
+        biotipo = form.save(commit=False)
+        print(biotipo)
+        fotos = self.request.FILES.getlist('fotos')
+        for foto in fotos:
+            HistoricoBioTipoFotos.objects.create(
+                historicobiotipo=biotipo,
+                foto=foto,
+            )
         return super().form_valid(form)
 
 
