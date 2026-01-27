@@ -42,30 +42,30 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-default-key")
 ALLOWED_HOSTS = ['*']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
-# ALLOWED_HOSTS = ['glicotracking.alvesdevpy.com.br', "glicotracking.com.br", '127.0.0.1', 'localhost']
-# CSRF_TRUSTED_ORIGINS = ["https://glicotracking.alvesdevpy.com.br",
-#                         "http://www.glicotracking.alvesdevpy.com.br",
-#                         "https://glicotracking.com.br",
-#                         "http://glicotracking.com.br"]
-#
-# # Reconhecer HTTPS por trás do Traefik
-# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-# USE_X_FORWARDED_HOST = True
-#
-# # Cookies seguros em produção
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
-#
-# # Recomendado
-# SECURE_HSTS_SECONDS = 31536000
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-# SECURE_HSTS_PRELOAD = True
-# SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
-# SECURE_BROWSER_XSS_FILTER = True
-# SECURE_CONTENT_TYPE_NOSNIFF = True
+#ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['glicotracking.alvesdevpy.com.br', "glicotracking.com.br", '127.0.0.1', 'localhost']
+CSRF_TRUSTED_ORIGINS = ["https://glicotracking.alvesdevpy.com.br",
+                        "http://www.glicotracking.alvesdevpy.com.br",
+                        "https://glicotracking.com.br",
+                        "http://glicotracking.com.br"]
+
+# Reconhecer HTTPS por trás do Traefik
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+
+# Cookies seguros em produção
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# Recomendado
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # Application definition
 
