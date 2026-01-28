@@ -3,7 +3,12 @@
 .gitignore
 venv
 __pychache__
-*.txt
+email_host.txt
+secret_key.txt
+email_senha.txt
+db_name.txt
+db_password.txt
+db_user.txt
 *.yml
 *.sqlite3
 *.md
