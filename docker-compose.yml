@@ -1,13 +1,15 @@
+version: '3.8'
+
 services:
   bancodados:
-    image: postgres:17.7-alpine
+    image: postgres:17-bullseye
     restart: always
     environment:
-      POSTGRES_DB_FILE: /run/secrets/db_name # Usa secret para nome do banco
-      POSTGRES_USER_FILE: /run/secrets/db_user     # Usa secret para usuário
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_password  # Usa secret para senha
+      POSTGRES_DB_FILE: /run/secrets/db_name
+      POSTGRES_USER_FILE: /run/secrets/db_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
     healthcheck:
-      test: [ "CMD-SHELL", "sh -c 'pg_isready -U $$(cat /run/secrets/db_user) -d $$(cat /run/secrets/db_name)'" ]
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U $$(cat /run/secrets/db_user) -d $$(cat /run/secrets/db_name)'"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -20,14 +22,14 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - "5434:5432"
+      - "5434:5432"  # Apenas para debug local; remova em prod se não precisar
 
   web:
-    image: glicotracking:v1
+    image: glicotracking:v2
     entrypoint: ["/app/entrypoint.sh"]
     command: ["gunicorn", "app.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]
     environment:
-      - secret_key=/run/secrets/secret_key  # Path para entrypoint ler
+      - secret_key=/run/secrets/secret_key
       - database_url=/run/secrets/database_url
       - db_name=/run/secrets/db_name
       - db_password=/run/secrets/db_password
@@ -35,13 +37,14 @@ services:
       - DEBUG=False
       - ALLOWED_HOSTS=glicotracking.alvesdevpy.com.br
     volumes:
-      - glico_data:/glicotracking
-      - static_volume:/glicotracking/static
-      - media_volume:/glicotracking/media
+      - glico_data:/app/glicotracking
+      - static_volume:/app/staticfiles  # Compartilhado com nginx
+      - media_volume:/app/media  # Compartilhado com nginx
     networks:
       - alvesdevpynet
     depends_on:
-     - bancodados
+      bancodados:
+        condition: service_healthy
     deploy:
       mode: replicated
       replicas: 1
@@ -55,15 +58,32 @@ services:
         - "traefik.http.routers.web.entrypoints=websecure"
         - "traefik.http.routers.web.priority=1"
         - "traefik.http.routers.web.tls.certresolver=letsencryptresolver"
-        - "traefik.http.routers.web.service=web"
         - "traefik.http.services.web.loadbalancer.server.port=8000"
         - "traefik.http.services.web.loadbalancer.passHostHeader=true"
-    secrets:
-      - secret_key
-      - database_url
-      - db_name
-      - db_password
-      - db_user
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - static_volume:/app/staticfiles:ro  # Apenas leitura
+      - media_volume:/app/media:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro  # Arquivo de config local
+    networks:
+      - alvesdevpynet
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.nginx.rule=Host(`glicotracking.alvesdevpy.com.br`)"
+        - "traefik.http.routers.nginx.entrypoints=websecure"
+        - "traefik.http.routers.nginx.priority=2"  # Maior prioridade que web para /static/ e /media/
+        - "traefik.http.routers.nginx.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.nginx.loadbalancer.server.port=80"
+        - "traefik.http.services.nginx.loadbalancer.passHostHeader=true"
 
 volumes:
   pgdata:
@@ -76,7 +96,7 @@ networks:
     external: true
     driver: overlay
 
-secrets:  # <- APENAS NOMES, SEM file: – Portainer gerencia
+secrets:
   secret_key:
     external: true
   database_url:
