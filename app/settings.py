@@ -182,9 +182,9 @@ EMAIL_HOST = 'smtp.hostinger.com'
 EMAIL_PORT = 465  # Use 465 for SSL or 587 for TLS
 EMAIL_USE_SSL = True  # Set to True for port 465, False for port 587
 EMAIL_USE_TLS = False  # Set to True for port 587, False for port 465
-EMAIL_HOST_USER = os.getenv("EMAIL")  # Replace with your email
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_SENHA")  # Replace with your email password
-DEFAULT_FROM_EMAIL = os.getenv("EMAIL")  # The default sender email
+EMAIL_HOST_USER = get_secret('email_host_user')  # Replace with your email
+EMAIL_HOST_PASSWORD = get_secret('email_senha')  # Replace with your email password
+DEFAULT_FROM_EMAIL = get_secret('email_host_user')  # The default sender email
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
